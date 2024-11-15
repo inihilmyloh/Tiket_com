@@ -3,8 +3,9 @@ package database;
 import java.sql.*;
 
 public class Database {
-   public static Connection com;
-    public static Statement stm; 
+
+    public static Connection com;
+    public static Statement stm;
 
     public static void main(String[] args) {
         try {
@@ -12,11 +13,11 @@ public class Database {
             String user = "root";
             String pass = "";
             Class.forName("com.mysql.cj.jdbc.Driver");
-            com =DriverManager.getConnection(url,user,pass);
-            stm =com.createStatement();
+            com = DriverManager.getConnection(url, user, pass);
+            stm = com.createStatement();
             System.out.println("Koneksi berhasil");
         } catch (ClassNotFoundException | SQLException e) {
-            System.err.println("Koneksi gagal " +e.getMessage());
+            System.err.println("Koneksi gagal " + e.getMessage());
         }
     }
 }
