@@ -5,28 +5,25 @@
 package Awalan;
 
 import java.awt.event.ActionListener;
-import javax.swing.event.AncestorListener;
 
 /**
  *
  * @author ASUS
  */
-public class Login extends javax.swing.JPanel {
+public class Register extends javax.swing.JPanel {
 
- 
-    public Login() {
+    /**
+     * Creates new form Login
+     */
+    public Register() {
         initComponents();
     }
     
-    public void addEventRegister(ActionListener event){
-        register.addActionListener(event);
+     public void addEventlogin(ActionListener event){
+        login.addActionListener(event);
     }
-    
-    
-    
-    
-    
 
+   
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -35,19 +32,19 @@ public class Login extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jeneng = new swing.TextField();
         pw = new swing.PasswordField();
-        login = new komponen.Button();
+        registrasi = new komponen.Button();
         jLabel4 = new javax.swing.JLabel();
-        register = new javax.swing.JButton();
+        login = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setOpaque(false);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel1.setText("Login to your account");
+        jLabel1.setText("Create to your account");
 
         jLabel2.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel2.setText("Belum punya akun?");
+        jLabel2.setText("Saya sudah punya akun!");
 
         jeneng.setForeground(new java.awt.Color(51, 51, 51));
         jeneng.setCaretColor(new java.awt.Color(51, 51, 51));
@@ -62,27 +59,28 @@ public class Login extends javax.swing.JPanel {
         pw.setCaretColor(new java.awt.Color(51, 51, 51));
         pw.setHint("Password");
 
-        login.setBackground(new java.awt.Color(102, 0, 204));
-        login.setForeground(new java.awt.Color(255, 255, 255));
-        login.setText("LOGIN");
-        login.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        login.addActionListener(new java.awt.event.ActionListener() {
+        registrasi.setBackground(new java.awt.Color(102, 102, 255));
+        registrasi.setForeground(new java.awt.Color(255, 255, 255));
+        registrasi.setText("REGISTRASI");
+        registrasi.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        registrasi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loginActionPerformed(evt);
+                registrasiActionPerformed(evt);
             }
         });
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/komponen/t.aom-nobg 1.png"))); // NOI18N
 
-        register.setForeground(new java.awt.Color(204, 51, 255));
-        register.setText("Registrasi");
-        register.setBorder(null);
-        register.setBorderPainted(false);
-        register.setContentAreaFilled(false);
-        register.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        register.addActionListener(new java.awt.event.ActionListener() {
+        login.setBackground(new java.awt.Color(102, 0, 255));
+        login.setForeground(new java.awt.Color(255, 102, 255));
+        login.setText("Login");
+        login.setBorder(null);
+        login.setBorderPainted(false);
+        login.setContentAreaFilled(false);
+        login.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        login.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                registerActionPerformed(evt);
+                loginActionPerformed(evt);
             }
         });
 
@@ -94,18 +92,18 @@ public class Login extends javax.swing.JPanel {
                 .addContainerGap(51, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(login, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
+                        .addComponent(registrasi, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
                         .addComponent(pw, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jeneng, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(jLabel2)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(register)))
+                            .addComponent(login)))
                     .addComponent(jLabel1))
                 .addContainerGap(27, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -118,14 +116,14 @@ public class Login extends javax.swing.JPanel {
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(register))
+                    .addComponent(login))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                 .addComponent(jeneng, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addComponent(pw, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
-                .addComponent(login, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addGap(69, 69, 69)
+                .addComponent(registrasi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(68, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -133,13 +131,13 @@ public class Login extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jenengActionPerformed
 
-    private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-     
-    }//GEN-LAST:event_loginActionPerformed
+    private void registrasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrasiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_registrasiActionPerformed
 
-    private void registerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerActionPerformed
-        
-    }//GEN-LAST:event_registerActionPerformed
+    private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_loginActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -147,8 +145,8 @@ public class Login extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private swing.TextField jeneng;
-    private komponen.Button login;
+    private javax.swing.JButton login;
     private swing.PasswordField pw;
-    private javax.swing.JButton register;
+    private komponen.Button registrasi;
     // End of variables declaration//GEN-END:variables
 }
