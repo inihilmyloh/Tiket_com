@@ -65,9 +65,9 @@
               <Component id="jeneng" min="-2" max="-2" attributes="0"/>
               <EmptySpace pref="37" max="32767" attributes="0"/>
               <Component id="pw" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="77" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="69" max="-2" attributes="0"/>
               <Component id="registrasi" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="65" max="32767" attributes="0"/>
+              <EmptySpace pref="63" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -81,7 +81,7 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="33" green="33" red="33" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Create your account"/>
+        <Property name="text" type="java.lang.String" value="Create to your account"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
@@ -142,7 +142,7 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="66" red="ff" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Sign In"/>
+        <Property name="text" type="java.lang.String" value="Login"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="null"/>
         </Property>

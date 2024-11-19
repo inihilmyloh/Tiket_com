@@ -5,6 +5,14 @@
 package Awalan;
 
 import java.awt.event.ActionListener;
+import java.security.MessageDigest;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.event.AncestorListener;
 
 /**
@@ -12,10 +20,14 @@ import javax.swing.event.AncestorListener;
  * @author ASUS
  */
 public class Login extends javax.swing.JPanel {
+    
+    public static Connection com;
+    public static Statement stm; 
 
  
     public Login() {
         initComponents();
+        
     }
     
     public void addEventRegister(ActionListener event){
@@ -145,14 +157,66 @@ public class Login extends javax.swing.JPanel {
     }//GEN-LAST:event_jenengActionPerformed
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-     
+        String nama,password,query,passDB=null;
+       String url,suser,spass;
+       url="jdbc:mysql://localhost:3306/loket_tiket";
+       suser="root";
+       spass="";
+       int tidak=0;
+       try{
+           Class.forName("com.mysql.cj.jdbc.Driver");
+            com =DriverManager.getConnection(url,suser,spass);
+            stm =com.createStatement();
+            if("".equals(jeneng.getText())){
+                JOptionPane.showMessageDialog(new JFrame(), "Masukan Username", "Error", JOptionPane.ERROR_MESSAGE);
+            }else if("".equals(pw.getText())){
+                JOptionPane.showMessageDialog(new JFrame(), "Masukan Password", "Error", JOptionPane.ERROR_MESSAGE);
+            }else{
+                nama=jeneng.getText();
+                password=passhash(pw.getText());
+                
+                query="SELECT * FROM login WHERE username=  '"+nama+"'";
+                ResultSet ler=stm.executeQuery(query);
+                while(ler.next()){
+                    passDB=ler.getString("password");
+                    tidak=1;
+                }
+                if(tidak==1 && password.equals(passDB)){
+                    jajal_admin menu=new jajal_admin();
+                    menu.setVisible(true);
+                    menu.revalidate();
+                    this.dispose();
+                }else{
+                    JOptionPane.showMessageDialog(new JFrame(), "Username dan Password Salah", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                
+                jeneng.setText("");
+                pw.setText("");
+               
+            }
+       }catch(ClassNotFoundException | SQLException e){
+           System.out.println("error"+e.getMessage());
+       }
     }//GEN-LAST:event_loginActionPerformed
 
     private void registerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerActionPerformed
         
     }//GEN-LAST:event_registerActionPerformed
 
-
+     public static String passhash(String password){
+        try {
+            MessageDigest md=MessageDigest.getInstance("SHA");
+            md.update(password.getBytes());
+            byte[] rbt=md.digest();
+            StringBuilder sb=new StringBuilder();
+            for(byte b:rbt){
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+        }
+         return null;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -163,4 +227,16 @@ public class Login extends javax.swing.JPanel {
     private swing.PasswordField pw;
     private javax.swing.JButton register;
     // End of variables declaration//GEN-END:variables
+
+    private void dispose() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    void setLocationRelativeTo(Object object) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    void pack() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

@@ -5,6 +5,13 @@
 package Awalan;
 
 import java.awt.event.ActionListener;
+import java.security.MessageDigest;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -12,16 +19,23 @@ import java.awt.event.ActionListener;
  */
 public class Register extends javax.swing.JPanel {
 
-    /**
-     * Creates new form Login
-     */
+    public static Connection com;
+     public static Statement stm;
+   
+   
     public Register() {
         initComponents();
     }
     
      public void addEventlogin(ActionListener event){
-        login.addActionListener(event);
+        login.addActionListener(event);   
     }
+     
+     
+     
+    
+     
+     
 
    
     @SuppressWarnings("unchecked")
@@ -42,7 +56,7 @@ public class Register extends javax.swing.JPanel {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel1.setText("Create your account");
+        jLabel1.setText("Create to your account");
 
         jLabel2.setForeground(new java.awt.Color(51, 51, 51));
         jLabel2.setText("Saya sudah punya akun!");
@@ -72,7 +86,7 @@ public class Register extends javax.swing.JPanel {
 
         login.setBackground(new java.awt.Color(102, 0, 255));
         login.setForeground(new java.awt.Color(255, 102, 255));
-        login.setText("Sign In");
+        login.setText("Login");
         login.setBorder(null);
         login.setBorderPainted(false);
         login.setContentAreaFilled(false);
@@ -130,9 +144,9 @@ public class Register extends javax.swing.JPanel {
                 .addComponent(jeneng, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addComponent(pw, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
+                .addGap(69, 69, 69)
                 .addComponent(registrasi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -141,9 +155,56 @@ public class Register extends javax.swing.JPanel {
     }//GEN-LAST:event_jenengActionPerformed
 
     private void registrasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrasiActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_registrasiActionPerformed
+      String nama,password,query;
+       String url,user,pass;
+       url="jdbc:mysql://localhost:3306/loket_tiket";
+       user="root";
+       pass="";
+       try{
+           Class.forName("com.mysql.cj.jdbc.Driver");
+            com =DriverManager.getConnection(url,user,pass);
+            stm =com.createStatement();
+            if("".equals(jeneng.getText())){
+             
+                JOptionPane.showMessageDialog(new JFrame(), "Username diperlukan", "Error", JOptionPane.ERROR_MESSAGE);
+            }else if("".equals(pw.getText())){
+           
+                JOptionPane.showMessageDialog(new JFrame(), "Password diperlukan", "Error", JOptionPane.ERROR_MESSAGE);
+            }else{
 
+                nama=jeneng.getText();
+                password=passhash(pw.getText());
+                System.out.println(password);
+                
+                query="INSERT INTO login(username ,password)"+"VALUES('"+nama+"', '"+password+"')";
+                
+                stm.execute(query);
+                jeneng.setText("");
+                pw.setText("");
+                JOptionPane.showMessageDialog(null, "Akun Berhasil Dibuat");
+               
+             
+                
+                
+            }
+       }catch(ClassNotFoundException | SQLException e){
+           System.out.println("error"+e.getMessage());
+       }
+    }//GEN-LAST:event_registrasiActionPerformed
+     public static String passhash(String password){
+        try {
+            MessageDigest md=MessageDigest.getInstance("SHA");
+            md.update(password.getBytes());
+            byte[] rbt=md.digest();
+            StringBuilder sb=new StringBuilder();
+            for(byte b:rbt){
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+        }
+         return null;
+    }
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_loginActionPerformed
@@ -159,4 +220,9 @@ public class Register extends javax.swing.JPanel {
     private swing.PasswordField pw;
     private komponen.Button registrasi;
     // End of variables declaration//GEN-END:variables
+
+    private void dispose() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
+
