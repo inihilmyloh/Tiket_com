@@ -13,8 +13,11 @@ import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 import shadow.ShadowRenderer;
 import swing.RippleEffect;
+import java.awt.event.ActionListener;
 
 public class Button extends JButton {
+    
+    
 
     public int getRound() {
         return round;
@@ -112,7 +115,9 @@ public class Button extends JButton {
         }
     }
 
-    public void addActionListener(ActionEvent evt) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    @Override
+    public void addActionListener(ActionListener l) {
+    super.addActionListener(l); // Pastikan ini ada
+}
+
 }

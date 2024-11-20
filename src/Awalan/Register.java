@@ -4,6 +4,7 @@
  */
 package Awalan;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.security.MessageDigest;
 import java.sql.Connection;
@@ -12,6 +13,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import komponen.pesan_akunberhasildibuat;
+import komponen.pesan_pwsalah;
+import komponen.pesan_usernamesalah;
+import raven.glasspanepopup.GlassPanePopup;
 
 /**
  *
@@ -21,23 +26,17 @@ public class Register extends javax.swing.JPanel {
 
     public static Connection com;
      public static Statement stm;
-   
+
    
     public Register() {
         initComponents();
+        
     }
     
      public void addEventlogin(ActionListener event){
         login.addActionListener(event);   
     }
-     
-     
-     
-    
-     
-     
 
-   
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -78,6 +77,11 @@ public class Register extends javax.swing.JPanel {
         registrasi.setForeground(new java.awt.Color(255, 255, 255));
         registrasi.setText("REGISTRASI");
         registrasi.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        registrasi.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                registrasiMousePressed(evt);
+            }
+        });
         registrasi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 registrasiActionPerformed(evt);
@@ -165,13 +169,15 @@ public class Register extends javax.swing.JPanel {
             com =DriverManager.getConnection(url,user,pass);
             stm =com.createStatement();
             if("".equals(jeneng.getText())){
-             
-                JOptionPane.showMessageDialog(new JFrame(), "Username diperlukan", "Error", JOptionPane.ERROR_MESSAGE);
+               
+                GlassPanePopup.showPopup(new pesan_usernamesalah());
+                //JOptionPane.showMessageDialog(new JFrame(), "Username diperlukan", "Error", JOptionPane.ERROR_MESSAGE);
             }else if("".equals(pw.getText())){
-           
-                JOptionPane.showMessageDialog(new JFrame(), "Password diperlukan", "Error", JOptionPane.ERROR_MESSAGE);
+             
+           GlassPanePopup.showPopup(new pesan_pwsalah());
+                //JOptionPane.showMessageDialog(new JFrame(), "Password diperlukan", "Error", JOptionPane.ERROR_MESSAGE);
             }else{
-
+               
                 nama=jeneng.getText();
                 password=passhash(pw.getText());
                 System.out.println(password);
@@ -181,9 +187,7 @@ public class Register extends javax.swing.JPanel {
                 stm.execute(query);
                 jeneng.setText("");
                 pw.setText("");
-                JOptionPane.showMessageDialog(null, "Akun Berhasil Dibuat");
-               
-             
+                GlassPanePopup.showPopup(new pesan_akunberhasildibuat());
                 
                 
             }
@@ -208,6 +212,11 @@ public class Register extends javax.swing.JPanel {
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_loginActionPerformed
+
+    private void registrasiMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registrasiMousePressed
+
+        
+    }//GEN-LAST:event_registrasiMousePressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
