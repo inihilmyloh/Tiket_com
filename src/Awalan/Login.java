@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.event.AncestorListener;
@@ -22,7 +22,7 @@ import javax.swing.event.AncestorListener;
 public class Login extends javax.swing.JPanel {
     
     public static Connection com;
-    public static Statement stm; 
+
 
  
     public Login() {
@@ -157,46 +157,60 @@ public class Login extends javax.swing.JPanel {
     }//GEN-LAST:event_jenengActionPerformed
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-        String nama,password,query,passDB=null;
-       String url,suser,spass;
-       url="jdbc:mysql://localhost:3306/loket_tiket";
-       suser="root";
-       spass="";
-       int tidak=0;
-       try{
-           Class.forName("com.mysql.cj.jdbc.Driver");
-            com =DriverManager.getConnection(url,suser,spass);
-            stm =com.createStatement();
-            if("".equals(jeneng.getText())){
-                JOptionPane.showMessageDialog(new JFrame(), "Masukan Username", "Error", JOptionPane.ERROR_MESSAGE);
-            }else if("".equals(pw.getText())){
-                JOptionPane.showMessageDialog(new JFrame(), "Masukan Password", "Error", JOptionPane.ERROR_MESSAGE);
-            }else{
-                nama=jeneng.getText();
-                password=passhash(pw.getText());
-                
-                query="SELECT * FROM login WHERE username=  '"+nama+"'";
-                ResultSet ler=stm.executeQuery(query);
-                while(ler.next()){
-                    passDB=ler.getString("password");
-                    tidak=1;
+                                   
+    String nama, password, passDB = null,level = null;
+    String url = "jdbc:mysql://localhost:3306/loket_tiket";
+    String suser = "root";
+    String spass = "";
+    
+    try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        com = DriverManager.getConnection(url, suser, spass);
+        
+        if (jeneng.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Masukan Username", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (pw.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Masukan Password", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        nama = jeneng.getText();
+        password = passhash(pw.getText());
+        
+        String query = "SELECT * FROM login WHERE username = ?";
+        
+        PreparedStatement pstmt = com.prepareStatement(query);
+        pstmt.setString(1, nama);
+        ResultSet ler = pstmt.executeQuery();
+        
+        if (ler.next()) {
+            level = ler.getString("level");
+            passDB = ler.getString("password");
+            if (password.equals(passDB)) {
+                if (level.equalsIgnoreCase("Admin")) {
+                    jajal_admin menuAdmin = new jajal_admin();
+                    menuAdmin.setVisible(true);
+                } else if (level.equalsIgnoreCase("Pegawai")) {
+                    jajal_peg menuPegawai = new jajal_peg();
+                    menuPegawai.setVisible(true);
                 }
-                if(tidak==1 && password.equals(passDB)){
-                    jajal_admin menu=new jajal_admin();
-                    menu.setVisible(true);
-                    menu.revalidate();
-                    this.dispose();
-                }else{
-                    JOptionPane.showMessageDialog(new JFrame(), "Username dan Password Salah", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                
-                jeneng.setText("");
-                pw.setText("");
-               
+            } else {
+                JOptionPane.showMessageDialog(this, "Username dan Password Salah", "Error", JOptionPane.ERROR_MESSAGE);
             }
-       }catch(ClassNotFoundException | SQLException e){
-           System.out.println("error"+e.getMessage());
-       }
+        } else {
+            JOptionPane.showMessageDialog(this, "Username tidak ditemukan", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        jeneng.setText("");
+        pw.setText("");
+        
+    } catch (ClassNotFoundException | SQLException e) {
+        System.out.println("error: " + e.getMessage());
+    }
+
     }//GEN-LAST:event_loginActionPerformed
 
     private void registerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerActionPerformed
@@ -228,9 +242,7 @@ public class Login extends javax.swing.JPanel {
     private javax.swing.JButton register;
     // End of variables declaration//GEN-END:variables
 
-    private void dispose() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+   
 
     void setLocationRelativeTo(Object object) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody

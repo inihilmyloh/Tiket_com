@@ -10,7 +10,9 @@ import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import komponen.pesan_akunberhasildibuat;
@@ -25,7 +27,7 @@ import raven.glasspanepopup.GlassPanePopup;
 public class Register extends javax.swing.JPanel {
 
     public static Connection com;
-     public static Statement stm;
+     public static PreparedStatement pst;
 
    
     public Register() {
@@ -159,41 +161,43 @@ public class Register extends javax.swing.JPanel {
     }//GEN-LAST:event_jenengActionPerformed
 
     private void registrasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrasiActionPerformed
-      String nama,password,query;
-       String url,user,pass;
-       url="jdbc:mysql://localhost:3306/loket_tiket";
-       user="root";
-       pass="";
-       try{
-           Class.forName("com.mysql.cj.jdbc.Driver");
-            com =DriverManager.getConnection(url,user,pass);
-            stm =com.createStatement();
-            if("".equals(jeneng.getText())){
-               
-                GlassPanePopup.showPopup(new pesan_usernamesalah());
-                //JOptionPane.showMessageDialog(new JFrame(), "Username diperlukan", "Error", JOptionPane.ERROR_MESSAGE);
-            }else if("".equals(pw.getText())){
-             
-           GlassPanePopup.showPopup(new pesan_pwsalah());
-                //JOptionPane.showMessageDialog(new JFrame(), "Password diperlukan", "Error", JOptionPane.ERROR_MESSAGE);
-            }else{
-               
-                nama=jeneng.getText();
-                password=passhash(pw.getText());
-                System.out.println(password);
-                
-                query="INSERT INTO login(username ,password)"+"VALUES('"+nama+"', '"+password+"')";
-                
-                stm.execute(query);
-                jeneng.setText("");
-                pw.setText("");
-                GlassPanePopup.showPopup(new pesan_akunberhasildibuat());
-                
-                
+      String nama, password, query;
+      String url, user, pass;
+      url = "jdbc:mysql://localhost:3306/loket_tiket";
+    user = "root";
+    pass = "";
+
+    Connection com = null;
+    PreparedStatement pst = null;
+
+    try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        com = DriverManager.getConnection(url, user, pass);
+
+        if (jeneng.getText().isEmpty()) {
+            GlassPanePopup.showPopup(new pesan_usernamesalah());
+        } else if (pw.getText().isEmpty()) {
+            GlassPanePopup.showPopup(new pesan_pwsalah());
+        } else {
+            nama = jeneng.getText();
+            password = passhash(pw.getText());
+            System.out.println(password);
+
+            query = "INSERT INTO login (username, password) VALUES (?, ?)";
+            pst = com.prepareStatement(query);
+            pst.setString(1, nama);
+            pst.setString(2, password);
+
+            pst.executeUpdate(); 
+            jeneng.setText("");
+            pw.setText("");
+            GlassPanePopup.showPopup(new pesan_akunberhasildibuat());
+        }
+    } catch (ClassNotFoundException e) {
+        System.out.println("Driver tidak ditemukan: " + e.getMessage());
+    }       catch (SQLException ex) {
+                Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
             }
-       }catch(ClassNotFoundException | SQLException e){
-           System.out.println("error"+e.getMessage());
-       }
     }//GEN-LAST:event_registrasiActionPerformed
      public static String passhash(String password){
         try {
