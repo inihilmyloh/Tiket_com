@@ -14,6 +14,11 @@ import java.sql.PreparedStatement;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.event.AncestorListener;
+import komponen.pesan_pwsalah;
+import komponen.pesan_usernamedanpwsalah;
+import komponen.pesan_usernamesalah;
+import komponen.pesan_usernatidakditemukan;
+import raven.glasspanepopup.GlassPanePopup;
 
 /**
  *
@@ -168,12 +173,12 @@ public class Login extends javax.swing.JPanel {
         com = DriverManager.getConnection(url, suser, spass);
         
         if (jeneng.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Masukan Username", "Error", JOptionPane.ERROR_MESSAGE);
+            GlassPanePopup.showPopup(new pesan_usernamesalah());
             return;
         }
         
         if (pw.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Masukan Password", "Error", JOptionPane.ERROR_MESSAGE);
+            GlassPanePopup.showPopup(new pesan_pwsalah());
             return;
         }
         
@@ -198,10 +203,10 @@ public class Login extends javax.swing.JPanel {
                     menuPegawai.setVisible(true);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Username dan Password Salah", "Error", JOptionPane.ERROR_MESSAGE);
+                GlassPanePopup.showPopup(new pesan_usernamedanpwsalah());
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Username tidak ditemukan", "Error", JOptionPane.ERROR_MESSAGE);
+            GlassPanePopup.showPopup(new pesan_usernatidakditemukan());
         }
         
         jeneng.setText("");
