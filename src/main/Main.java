@@ -3,12 +3,12 @@ package main;
 import Awalan.main;
 import java.awt.*;
 
-public class tampilanutama extends javax.swing.JFrame {
+public class Main extends javax.swing.JFrame {
 
-    public tampilanutama() {
+    public Main() {
         initComponents();
         setBackground(new Color(0, 0, 0, 0));
-        menu1.gerakM(tampilanutama.this);
+        menu1.gerakM(Main.this);
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -17,10 +17,21 @@ public class tampilanutama extends javax.swing.JFrame {
         pn_Border1 = new swing.pn_Border();
         menu1 = new komponen.Menu();
         header1 = new komponen.Header();
-        transaksi_dewa1 = new form.Transaksi_dewa();
+        jPanel1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout pn_Border1Layout = new javax.swing.GroupLayout(pn_Border1);
         pn_Border1.setLayout(pn_Border1Layout);
@@ -29,10 +40,11 @@ public class tampilanutama extends javax.swing.JFrame {
             .addGroup(pn_Border1Layout.createSequentialGroup()
                 .addComponent(menu1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(pn_Border1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(header1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(header1, javax.swing.GroupLayout.DEFAULT_SIZE, 839, Short.MAX_VALUE)
                     .addGroup(pn_Border1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(transaksi_dewa1, javax.swing.GroupLayout.PREFERRED_SIZE, 833, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(6, 6, 6)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         pn_Border1Layout.setVerticalGroup(
             pn_Border1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -40,7 +52,7 @@ public class tampilanutama extends javax.swing.JFrame {
             .addGroup(pn_Border1Layout.createSequentialGroup()
                 .addComponent(header1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(transaksi_dewa1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -71,8 +83,8 @@ public class tampilanutama extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private komponen.Header header1;
+    private javax.swing.JPanel jPanel1;
     private komponen.Menu menu1;
     private swing.pn_Border pn_Border1;
-    private form.Transaksi_dewa transaksi_dewa1;
     // End of variables declaration//GEN-END:variables
 }

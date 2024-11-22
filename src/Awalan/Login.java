@@ -18,7 +18,7 @@ import komponen.pesan_pwsalah;
 import komponen.pesan_usernamedanpwsalah;
 import komponen.pesan_usernamesalah;
 import komponen.pesan_usernatidakditemukan;
-import main.tampilanutama;
+import main.Main;
 import raven.glasspanepopup.GlassPanePopup;
 
 /**
@@ -197,11 +197,11 @@ public class Login extends javax.swing.JPanel {
             passDB = ler.getString("password");
             if (password.equals(passDB)) {
                 if (level.equalsIgnoreCase("Admin")) {
-                    tampilanutama menuAdmin = new tampilanutama();
+                    Main menuAdmin = new Main();
                     menuAdmin.setVisible(true);
                 
                 } else if (level.equalsIgnoreCase("Pegawai")) {
-                    tampilanutama menuPegawai = new tampilanutama();
+                    Main menuPegawai = new Main();
                     menuPegawai.setVisible(true);
                  
                 }

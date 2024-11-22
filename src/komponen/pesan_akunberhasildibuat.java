@@ -10,7 +10,7 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
-import main.tampilanutama;
+import main.Main;
 import raven.glasspanepopup.GlassPanePopup;
 
 
@@ -21,7 +21,7 @@ public class pesan_akunberhasildibuat extends javax.swing.JPanel {
     public pesan_akunberhasildibuat() {
         initComponents();
         setOpaque(false);
-        tampilanutama utama=new tampilanutama();
+        Main utama=new Main();
         if (utama.isVisible()) {
             System.exit(0);
         } else {
@@ -109,7 +109,7 @@ public class pesan_akunberhasildibuat extends javax.swing.JPanel {
 
     private void signActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signActionPerformed
         GlassPanePopup.closePopupLast();
-        tampilanutama awalFrame=new tampilanutama();
+        Main awalFrame=new Main();
                     awalFrame.setVisible(true);
                     awalFrame.pack();
                     awalFrame.setLocationRelativeTo(null);
