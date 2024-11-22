@@ -18,6 +18,7 @@ import komponen.pesan_pwsalah;
 import komponen.pesan_usernamedanpwsalah;
 import komponen.pesan_usernamesalah;
 import komponen.pesan_usernatidakditemukan;
+import main.tampilanutama;
 import raven.glasspanepopup.GlassPanePopup;
 
 /**
@@ -196,11 +197,13 @@ public class Login extends javax.swing.JPanel {
             passDB = ler.getString("password");
             if (password.equals(passDB)) {
                 if (level.equalsIgnoreCase("Admin")) {
-                    jajal_admin menuAdmin = new jajal_admin();
+                    tampilanutama menuAdmin = new tampilanutama();
                     menuAdmin.setVisible(true);
+                
                 } else if (level.equalsIgnoreCase("Pegawai")) {
-                    jajal_peg menuPegawai = new jajal_peg();
+                    tampilanutama menuPegawai = new tampilanutama();
                     menuPegawai.setVisible(true);
+                 
                 }
             } else {
                 GlassPanePopup.showPopup(new pesan_usernamedanpwsalah());
@@ -254,6 +257,10 @@ public class Login extends javax.swing.JPanel {
     }
 
     void pack() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private void dispose() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

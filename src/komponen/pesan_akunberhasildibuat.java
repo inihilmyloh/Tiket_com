@@ -4,13 +4,13 @@
  */
 package komponen;
 
-import Awalan.jajal_peg;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
+import main.tampilanutama;
 import raven.glasspanepopup.GlassPanePopup;
 
 
@@ -21,6 +21,12 @@ public class pesan_akunberhasildibuat extends javax.swing.JPanel {
     public pesan_akunberhasildibuat() {
         initComponents();
         setOpaque(false);
+        tampilanutama utama=new tampilanutama();
+        if (utama.isVisible()) {
+            System.exit(0);
+        } else {
+    System.out.println("Frame utama tidak terlihat");
+}
     }
 
     
@@ -47,22 +53,18 @@ public class pesan_akunberhasildibuat extends javax.swing.JPanel {
         sign = new komponen.Button();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/komponen/idea (1).png"))); // NOI18N
-        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 40, -1, 88));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(102, 102, 255));
         jLabel2.setText("Akun dibuat");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 140, -1, -1));
 
         jTextPane1.setEditable(false);
         jTextPane1.setBackground(new java.awt.Color(255, 255, 255));
         jTextPane1.setBorder(null);
         jTextPane1.setForeground(new java.awt.Color(102, 102, 102));
         jTextPane1.setText("         Akun anda sudah berhasil di buat\n                 tekan oke untuk lanjut");
-        add(jTextPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 170, -1, 33));
 
         sign.setBackground(new java.awt.Color(153, 153, 255));
         sign.setForeground(new java.awt.Color(255, 255, 255));
@@ -73,12 +75,41 @@ public class pesan_akunberhasildibuat extends javax.swing.JPanel {
                 signActionPerformed(evt);
             }
         });
-        add(sign, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 270, -1));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(90, 90, 90)
+                .addComponent(jLabel1))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(90, 90, 90)
+                .addComponent(jLabel2))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(jTextPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(sign, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(jLabel2)
+                .addGap(5, 5, 5)
+                .addComponent(jTextPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(17, 17, 17)
+                .addComponent(sign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     private void signActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signActionPerformed
         GlassPanePopup.closePopupLast();
-        jajal_peg awalFrame=new jajal_peg();
+        tampilanutama awalFrame=new tampilanutama();
                     awalFrame.setVisible(true);
                     awalFrame.pack();
                     awalFrame.setLocationRelativeTo(null);
