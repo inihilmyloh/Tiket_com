@@ -2,6 +2,16 @@ package main;
 
 import Awalan.main;
 import java.awt.*;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
+import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import java.awt.EventQueue;
+import java.awt.Font;
+import javax.swing.JProgressBar;
+import javax.swing.UIManager;
+
 
 public class Main extends javax.swing.JFrame {
 
@@ -72,7 +82,10 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public static void main(String args[]) {
-
+        FlatRobotoFont.install();
+        FlatLaf.registerCustomDefaultsSource("crazypanel");
+        UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 13));
+        FlatMacLightLaf.setup();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new main().setVisible(true);
