@@ -1,23 +1,20 @@
 package database;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Database {
-
-    public static Connection com;
-    public static Statement stm;
-
-    public static void main(String[] args) {
+    public static Connection getConnection() {
+        Connection connection = null;
         try {
-            String url = "jdbc:mysql://localhost:3306/loket_tiket";
+            String url = "jdbc:mysql://localhost:3306/loket_tiket"; // Sesuaikan dengan port dan nama database
             String user = "root";
-            String pass = "";
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            com = DriverManager.getConnection(url, user, pass);
-            stm = com.createStatement();
-            System.out.println("Koneksi berhasil");
-        } catch (ClassNotFoundException | SQLException e) {
-            System.err.println("Koneksi gagal " + e.getMessage());
+            String password = ""; // Kosong karena tidak ada password
+            connection = DriverManager.getConnection(url, user, password);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return connection;
     }
 }

@@ -26,7 +26,7 @@ public final class DateChooser extends javax.swing.JPanel {
 
     private JTextField textRefernce;
     private final String MONTH_ENGLISH[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-    private String dateFormat = "dd-MM-yyyy";
+    private String dateFormat = "yyyy-MM-dd";
     private int MONTH = 1;
     private int YEAR = 2021;
     private int DAY = 1;
@@ -62,19 +62,19 @@ public final class DateChooser extends javax.swing.JPanel {
     }
 
     private void setText(boolean runEvent, int act) {
-        if (textRefernce != null) {
-            try {
-                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-                Date date = df.parse(DAY + "-" + MONTH + "-" + YEAR);
-                textRefernce.setText(new SimpleDateFormat(dateFormat).format(date));
-            } catch (ParseException e) {
-                System.err.println(e);
-            }
-        }
-        if (runEvent) {
-            runEvent(act);
+    if (textRefernce != null) {
+        try {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = df.parse(YEAR + "-" + MONTH + "-" + DAY);
+            textRefernce.setText(new SimpleDateFormat(dateFormat).format(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
+    if (runEvent) {
+        runEvent(act);
+    }
+  }
 
     private void runEvent(int act) {
         SelectedAction action = new SelectedAction() {
@@ -140,24 +140,31 @@ public final class DateChooser extends javax.swing.JPanel {
     }
 
     private void toDay(boolean runEvent) {
-        Dates dates = new Dates();
-        dates.setForeground(getForeground());
-        dates.setEvent(getEventDay(dates));
-        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        Date date = new Date();
-        String toDay = df.format(date);
-        DAY = Integer.valueOf(toDay.split("-")[0]);
-        MONTH = Integer.valueOf(toDay.split("-")[1]);
-        YEAR = Integer.valueOf(toDay.split("-")[2]);
+    try {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String today = df.format(new Date());
+        String[] parts = today.split("-");
+        YEAR = Integer.parseInt(parts[0]);
+        MONTH = Integer.parseInt(parts[1]);
+        DAY = Integer.parseInt(parts[2]);
+
         selectedDate.setDay(DAY);
         selectedDate.setMonth(MONTH);
         selectedDate.setYear(YEAR);
+
+        Dates dates = new Dates();
+        dates.setForeground(getForeground());
+        dates.setEvent(getEventDay(dates));
         dates.showDate(MONTH, YEAR, selectedDate);
+
         slide.slideNon(dates);
         cmdMonth.setText(MONTH_ENGLISH[MONTH - 1]);
-        cmdYear.setText(YEAR + "");
+        cmdYear.setText(String.valueOf(YEAR));
         setText(runEvent, 0);
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
 
     public void toDay() {
         toDay(true);
@@ -460,11 +467,11 @@ public final class DateChooser extends javax.swing.JPanel {
     }
 
     public void setSelectedDate(Date date) {
-        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String d = df.format(date);
-        DAY = Integer.valueOf(d.split("-")[0]);
+        YEAR = Integer.valueOf(d.split("-")[0]);
         MONTH = Integer.valueOf(d.split("-")[1]);
-        YEAR = Integer.valueOf(d.split("-")[2]);
+        DAY = Integer.valueOf(d.split("-")[2]);
         selectedDate.setDay(DAY);
         selectedDate.setMonth(MONTH);
         selectedDate.setYear(YEAR);

@@ -1,59 +1,28 @@
 package model;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class Transaksi_dewa {
-    private String namapelanggan;
-    private double totalharga;
-    private String Tanggal;
-    private int jumlahtiket;
-    private int stock;
-    private String jenistiket;
+ public static Connection com;
+    public static Statement stm;
+    public static ResultSet rs;
+    public static String sql;
 
-    public String getNamapelanggan() {
-        return namapelanggan;
+    public Transaksi_dewa() {
+        try {
+            String url = "jdbc:mysql://localhost:3306/loket_tiket";
+            String user = "root";
+            String pass = "";
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            com = DriverManager.getConnection(url, user, pass);
+            stm = com.createStatement();
+        } catch (ClassNotFoundException | SQLException e) {
+            System.err.println("Koneksi gagal " + e.getMessage());
+        }
     }
 
-    public void setNamapelanggan(String namapelanggan) {
-        this.namapelanggan = namapelanggan;
-    }
-
-    public double getTotalharga() {
-        return totalharga;
-    }
-
-    public void setTotalharga(double totalharga) {
-        this.totalharga = totalharga;
-    }
-
-    public String getTanggal() {
-        return Tanggal;
-    }
-
-    public void setTanggal(String Tanggal) {
-        this.Tanggal = Tanggal;
-    }
-
-    public int getJumlahtiket() {
-        return jumlahtiket;
-    }
-
-    public void setJumlahtiket(int jumlahtiket) {
-        this.jumlahtiket = jumlahtiket;
-    }
-
-    public int getStock() {
-        return stock;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
-    public String getJenistiket() {
-        return jenistiket;
-    }
-
-    public void setJenistiket(String jenistiket) {
-        this.jenistiket = jenistiket;
-    }
-    
 }
