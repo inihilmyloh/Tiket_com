@@ -16,11 +16,10 @@ public class Main extends javax.swing.JFrame {
 
         pn_Border1 = new com.loket.swing.pn_Border();
         menu1 = new com.loket.komponen.Menu();
+        header1 = new com.loket.komponen.Header();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
-
-        pn_Border1.setBackground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout pn_Border1Layout = new javax.swing.GroupLayout(pn_Border1);
         pn_Border1.setLayout(pn_Border1Layout);
@@ -28,11 +27,15 @@ public class Main extends javax.swing.JFrame {
             pn_Border1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pn_Border1Layout.createSequentialGroup()
                 .addComponent(menu1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 950, Short.MAX_VALUE))
+                .addGap(0, 0, 0)
+                .addComponent(header1, javax.swing.GroupLayout.DEFAULT_SIZE, 963, Short.MAX_VALUE))
         );
         pn_Border1Layout.setVerticalGroup(
             pn_Border1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(menu1, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+            .addGroup(pn_Border1Layout.createSequentialGroup()
+                .addComponent(header1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -83,6 +86,7 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.loket.komponen.Header header1;
     private com.loket.komponen.Menu menu1;
     private com.loket.swing.pn_Border pn_Border1;
     // End of variables declaration//GEN-END:variables
