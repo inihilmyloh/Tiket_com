@@ -27,6 +27,7 @@ import java.sql.*;
 import java.util.*;
 import java.text.*;
 import database.Database;
+import javax.swing.SpinnerNumberModel;
 
 public class Transaksi_dewa extends javax.swing.JPanel {
 
@@ -44,8 +45,9 @@ public class Transaksi_dewa extends javax.swing.JPanel {
        tanggal.setText("");
 
         hitungKembalian(); // Hitung kembalian otomatis saat aplikasi pertama kali dijalankan
-        
-        pesan.addActionListener(new ActionListener() {
+        setSpinnerStock();
+        hitungSatuan();
+         pesan.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Ambil data dari field input
                 String Nama = nama.getText();
@@ -54,128 +56,161 @@ public class Transaksi_dewa extends javax.swing.JPanel {
                 String Tunai = tunai.getText();
                 String Kembalian = kembalian.getText();
 
-              
+                // Simpan transaksi
                 simpanTransaksi(Nama, Total, Tanggal, Tunai, Kembalian);
             }
         });
     }
     
-    // Tambahkan listener untuk perhitungan otomatis
-private void addListeners() {
-    // Event listener untuk jumlah barang
-    jumlah1.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-        @Override
-        public void insertUpdate(javax.swing.event.DocumentEvent e) {
-            hitungKembalian();
-            hitungTotal(); // Panggil fungsi perhitungan
-        }
-
-        @Override
-        public void removeUpdate(javax.swing.event.DocumentEvent e) {
-            hitungKembalian();
-            hitungTotal(); // Panggil fungsi perhitungan
-        }
-
-        @Override
-        public void changedUpdate(javax.swing.event.DocumentEvent e) {
-            hitungKembalian();
-            hitungTotal(); // Panggil fungsi perhitungan
-  
-
-        }
-    });
-    tunai.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            hitungKembalian(); // Hitung kembalian ketika tunai berubah
-                   }
-    });
-
-    // Event listener untuk jenis barang (JComboBox)
-    jenis.addActionListener(e -> hitungTotal());
+    private void hitungSatuan() {
+    if (jenis.getSelectedItem().toString().equalsIgnoreCase("Silver")) {
+        satuan.setText("50000");
+    } else if (jenis.getSelectedItem().toString().equalsIgnoreCase("Gold")) {
+        satuan.setText("100000");
+    }
 }
+    
+    private void setSpinnerStock() {
+    Connection com = Database.getConnection();
+    String query = "SELECT stock FROM tiket WHERE jenis_tiket = ?";
+    try {
+        if (jenis.getSelectedItem() != null) {
+            PreparedStatement ps = com.prepareStatement(query);
+            ps.setString(1, jenis.getSelectedItem().toString());
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                int stock = rs.getInt("stock");
+                Jumlah.setModel(new SpinnerNumberModel(1, 1, stock, 1)); // Set model spinner
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (com != null) com.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+    
+    // Tambahkan listener untuk perhitungan otomatis
+// Tambahkan listener untuk perhitungan otomatis
+private void addListeners() {
+    // Listener untuk JSpinner (Jumlah)
+    Jumlah.addChangeListener(e -> {
+        hitungTotal();
+        hitungKembalian();
+    });
+
+    // Listener untuk JComboBox (jenis)
+    jenis.addActionListener(e -> {
+        hitungTotal();
+        hitungKembalian();
+        setSpinnerStock(); // Pastikan spinner stok diperbarui
+    });
+
+    // Listener untuk JTextField (tunai)
+    tunai.addKeyListener(new KeyAdapter() {
+        @Override
+        public void keyReleased(KeyEvent e) {
+            hitungKembalian();
+        }
+    });
+}
+
 
 // Fungsi untuk menghitung total biaya
 public void hitungTotal() {
     try {
-        
-        if(jenis.getSelectedItem().toString().equalsIgnoreCase("Silver")){
-           satuan.setText("50000");
-       }else if(jenis.getSelectedItem().toString().equalsIgnoreCase("Gold")){
-           satuan.setText("100000");
-       }
-        // Ambil jumlah barang dari textfield
-        int jumlahBarang = Integer.parseInt(jumlah1.getText());
-
-        // Ambil jenis barang dari JComboBox
-        String jenisBarang = jenis.getSelectedItem().toString();
-
-        // Tentukan harga satuan berdasarkan jenis barang
-        int hargaSatuan = 0;
-        if (jenisBarang.equalsIgnoreCase("Silver")) {
-            hargaSatuan = 50000; // Harga untuk jenis Silver
-        } else if (jenisBarang.equalsIgnoreCase("Gold")) {
-            hargaSatuan = 100000; // Harga untuk jenis Gold
+        if (jenis.getSelectedItem() != null) { // Validasi JComboBox
+            int hargaSatuan = jenis.getSelectedItem().toString().equalsIgnoreCase("Silver") ? 50000 : 100000;
+            int jumlahBarang = (int) Jumlah.getValue(); // Ambil nilai dari spinner
+            
+            int totalBiaya = jumlahBarang * hargaSatuan;
+            total.setText(String.valueOf(totalBiaya)); // Set total harga
+        } else {
+            total.setText("0"); // Default jika tidak ada item dipilih
         }
-
-        // Hitung total biaya
-        int totalBiaya = jumlahBarang * hargaSatuan;
-        
-       ;
-
-        // Tampilkan hasil ke textfield
-        total.setText(String.valueOf(totalBiaya)); // Hasil numerik
-
-    } catch (NumberFormatException e) {
-        // Jika input tidak valid (textfield kosong atau tidak angka), kosongkan total biaya
-        total.setText("0");
-        
+    } catch (Exception e) {
+        total.setText("0"); // Jika ada error, tampilkan 0
+        e.printStackTrace();
     }
 }
-    private void hitungKembalian() {
+
+private void hitungKembalian() {
     try {
-        // Ambil nilai tunai dari text field
-        if (tunai.getText().isEmpty()) {
+        if (tunai.getText().isEmpty() || total.getText().isEmpty()) {
             kembalian.setText("0");
-            return; // Keluar jika tunai kosong
+            return; // Jika kosong, langsung keluar
         }
 
         int tunaiPembeli = Integer.parseInt(tunai.getText());
-        
-        // Ambil nilai total yang sudah dihitung
         int totalBiaya = Integer.parseInt(total.getText());
-        
-         if (tunaiPembeli < totalBiaya) {
-            kembalian.setText("0"); // Jangan tampilkan kembalian negatif, tampilkan 0
-        } else {
-            // Hitung kembalian
-            int kembalianPembeli = tunaiPembeli - totalBiaya;
-            kembalian.setText(String.valueOf(kembalianPembeli)); // Tampilkan hasil di text field kembalian
-        }
-       
 
+        // Validasi jika tunai kurang dari total
+        if (tunaiPembeli < totalBiaya) {
+            kembalian.setText("0");
+        } else {
+            int kembalianPembeli = tunaiPembeli - totalBiaya;
+            kembalian.setText(String.valueOf(kembalianPembeli));
+        }
     } catch (NumberFormatException e) {
-        // Tangani jika tunai kosong atau salah format
-        kembalian.setText("0");
+        kembalian.setText("0"); // Error format input
     }
 }
-    public void simpanTransaksi(String Nama, String Total, String Tanggal, String Kembalian, String Tunai) {
+
+    public void simpanTransaksi(String Nama, String Total, String Tanggal, String Tunai, String Kembalian) {
         Connection com = Database.getConnection();
-        String query = "INSERT INTO transaksi (nama_pelanggan, total_harga, tanggal, uang_kembali, uang_masuk) VALUES (?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO transaksi (nama_pelanggan, total_harga, tanggal, uang_kembali, uang_masuk) VALUES (?, ?, ?, ?, ?)";
+        String updateStockQuery = "UPDATE tiket SET stock = stock - ? WHERE jenis_tiket = ?";
+        
         try {
-            PreparedStatement ps = com.prepareStatement(query);
+            // Mulai transaksi database
+            com.setAutoCommit(false);
+
+            // Simpan transaksi ke tabel transaksi
+            PreparedStatement ps = com.prepareStatement(insertQuery);
             ps.setString(1, Nama);
             ps.setString(2, Total);
             ps.setString(3, Tanggal);
             ps.setString(4, Kembalian);
             ps.setString(5, Tunai);
             ps.executeUpdate();
-            System.out.println("Data berhasil disimpan!");
+
+            // Ambil jumlah tiket yang dibeli dari JSpinner
+            int jumlahTiket = (int) Jumlah.getValue();
+
+            // Kurangi stok tiket
+            if (jenis.getSelectedItem() != null) { // Validasi JComboBox
+                String jenisTiket = jenis.getSelectedItem().toString();
+                PreparedStatement updatePs = com.prepareStatement(updateStockQuery);
+                updatePs.setInt(1, jumlahTiket);
+                updatePs.setString(2, jenisTiket);
+                updatePs.executeUpdate();
+            }
+
+            // Commit transaksi
+            com.commit();
+            System.out.println("Transaksi berhasil disimpan dan stok berhasil diperbarui!");
+
+            // Perbarui Spinner setelah transaksi
+            setSpinnerStock();
         } catch (SQLException e) {
+            try {
+                if (com != null) {
+                    com.rollback(); // Rollback jika terjadi kesalahan
+                }
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
             e.printStackTrace();
         } finally {
             try {
                 if (com != null) {
+                    com.setAutoCommit(true); // Kembalikan ke mode auto-commit
                     com.close();
                 }
             } catch (SQLException ex) {
@@ -183,6 +218,8 @@ public void hitungTotal() {
             }
         }
     }
+
+
 
     
 
@@ -219,8 +256,8 @@ public void hitungTotal() {
         jLabel8 = new javax.swing.JLabel();
         tunai = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        jumlah1 = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
+        Jumlah = new javax.swing.JSpinner();
 
         dateChooser1.setForeground(new java.awt.Color(102, 102, 255));
         dateChooser1.setTextRefernce(tanggal);
@@ -343,10 +380,10 @@ public void hitungTotal() {
 
         jLabel9.setText("Tunai");
         panelRound1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, -1, -1));
-        panelRound1.add(jumlah1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 130, 90, -1));
 
         jLabel10.setText("Jumlah Tiket");
         panelRound1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 110, -1, -1));
+        panelRound1.add(Jumlah, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 130, 70, -1));
 
         add(panelRound1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 750, 440));
     }// </editor-fold>//GEN-END:initComponents
@@ -377,6 +414,7 @@ public void hitungTotal() {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSpinner Jumlah;
     private tanggal.DateChooser dateChooser1;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
@@ -390,7 +428,6 @@ public void hitungTotal() {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JComboBox<String> jenis;
-    private javax.swing.JTextField jumlah1;
     private javax.swing.JTextField kembalian;
     private javax.swing.JTextField nama;
     private komponen.PanelRound panelRound1;
