@@ -1,5 +1,6 @@
 package com.loket.main;
 
+import com.loket.swing.ScrollBar;
 import java.awt.Color;
 
 public class Main extends javax.swing.JFrame {
@@ -8,6 +9,7 @@ public class Main extends javax.swing.JFrame {
         initComponents();
         setBackground(new Color(0, 0, 0, 0));
         menu1.initMoving(Main.this);
+        sp.setVerticalScrollBar(new ScrollBar());
     }
 
     @SuppressWarnings("unchecked")
@@ -17,9 +19,14 @@ public class Main extends javax.swing.JFrame {
         pn_Border1 = new com.loket.swing.pn_Border();
         menu1 = new com.loket.komponen.Menu();
         header1 = new com.loket.komponen.Header();
+        sp = new javax.swing.JScrollPane();
+        f_Home1 = new com.loket.form.f_Home();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
+
+        sp.setBorder(null);
+        sp.setViewportView(f_Home1);
 
         javax.swing.GroupLayout pn_Border1Layout = new javax.swing.GroupLayout(pn_Border1);
         pn_Border1.setLayout(pn_Border1Layout);
@@ -28,14 +35,21 @@ public class Main extends javax.swing.JFrame {
             .addGroup(pn_Border1Layout.createSequentialGroup()
                 .addComponent(menu1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(header1, javax.swing.GroupLayout.DEFAULT_SIZE, 963, Short.MAX_VALUE))
+                .addGroup(pn_Border1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(header1, javax.swing.GroupLayout.DEFAULT_SIZE, 963, Short.MAX_VALUE)
+                    .addGroup(pn_Border1Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(sp)
+                        .addContainerGap())))
         );
         pn_Border1Layout.setVerticalGroup(
             pn_Border1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(menu1, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+            .addComponent(menu1, javax.swing.GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
             .addGroup(pn_Border1Layout.createSequentialGroup()
                 .addComponent(header1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(sp)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -86,8 +100,10 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.loket.form.f_Home f_Home1;
     private com.loket.komponen.Header header1;
     private com.loket.komponen.Menu menu1;
     private com.loket.swing.pn_Border pn_Border1;
+    private javax.swing.JScrollPane sp;
     // End of variables declaration//GEN-END:variables
 }
