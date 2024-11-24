@@ -27,6 +27,7 @@ import java.sql.*;
 import java.util.*;
 import java.text.*;
 import database.Database;
+import java.time.LocalDate;
 import javax.swing.SpinnerNumberModel;
 
 public class Transaksi_dewa extends javax.swing.JPanel {
@@ -43,6 +44,7 @@ public class Transaksi_dewa extends javax.swing.JPanel {
         }
     });
        tanggal.setText("");
+       Jumlah.setValue(0);
 
         hitungKembalian(); // Hitung kembalian otomatis saat aplikasi pertama kali dijalankan
         setSpinnerStock();
@@ -81,7 +83,7 @@ public class Transaksi_dewa extends javax.swing.JPanel {
             
             if (rs.next()) {
                 int stock = rs.getInt("stock");
-                Jumlah.setModel(new SpinnerNumberModel(1, 1, stock, 1)); // Set model spinner
+                Jumlah.setModel(new SpinnerNumberModel(0, 0, stock, 1)); // Set model spinner
             }
         }
     } catch (SQLException e) {
@@ -140,6 +142,37 @@ public void hitungTotal() {
     }
 }
 
+public String generateIdTransaksi(String jenisTiket) {
+    String idTransaksi = "";
+    try {
+        // Koneksi database
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/loket_tiket", "root", "");
+
+        // Ambil nilai auto-increment terakhir dari database
+        String query = "SELECT COUNT(*) FROM transaksi";
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(query);
+        int count = 0;
+        if (rs.next()) {
+            count = rs.getInt(1) + 1; // Nilai auto-increment selanjutnya
+        }
+
+        // Format auto-increment menjadi 2 digit
+        String autoIncrement = String.format("%02d", count);
+
+        // Ambil 2 digit terakhir dari tanggal saat ini
+        LocalDate today = LocalDate.now();
+        String tanggal = String.format("%02d", today.getDayOfMonth());
+
+        // Buat ID transaksi
+        idTransaksi = jenisTiket + autoIncrement + tanggal; // Contoh: G0113
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return idTransaksi;
+}
+
+
 private void hitungKembalian() {
     try {
         if (tunai.getText().isEmpty() || total.getText().isEmpty()) {
@@ -163,61 +196,86 @@ private void hitungKembalian() {
 }
 
     public void simpanTransaksi(String Nama, String Total, String Tanggal, String Tunai, String Kembalian) {
-        Connection com = Database.getConnection();
-        String insertQuery = "INSERT INTO transaksi (nama_pelanggan, total_harga, tanggal, uang_kembali, uang_masuk) VALUES (?, ?, ?, ?, ?)";
-        String updateStockQuery = "UPDATE tiket SET stock = stock - ? WHERE jenis_tiket = ?";
+    Connection com = Database.getConnection();
+    
+    // Ambil jenis tiket
+    String jenisTiket = jenis.getSelectedItem().toString();
+    String kodeTiket = jenisTiket.equalsIgnoreCase("Gold") ? "G" : "S";
+    
+    try {
+        // Ambil nomor transaksi terakhir (terbesar)
+        String lastIdQuery = "SELECT id_transaksi FROM transaksi WHERE id_transaksi LIKE ? ORDER BY id_transaksi DESC LIMIT 1";
+        PreparedStatement lastIdPs = com.prepareStatement(lastIdQuery);
+        lastIdPs.setString(1, kodeTiket + "%"); // Filter berdasarkan jenis tiket (G atau S)
+        ResultSet rs = lastIdPs.executeQuery();
         
+        int nextNumber = 1; // Default untuk transaksi pertama
+        
+        if (rs.next()) {
+            // Ambil bagian angka dari id_transaksi (misalnya dari G0214 → 02)
+            String lastId = rs.getString("id_transaksi");
+            int lastNumber = Integer.parseInt(lastId.substring(1, 3)); // Ambil "02"
+            nextNumber = lastNumber + 1; // Increment ke transaksi berikutnya
+        }
+        
+        // Format auto-increment dengan dua digit (misalnya: 02, 03, ...)
+        String formattedIncrement = String.format("%02d", nextNumber);
+        
+        // Ambil dua digit tanggal dari input tanggal (format yyyy-mm-dd)
+        String day = Tanggal.substring(8, 10); 
+        
+        // Gabungkan semua bagian menjadi ID transaksi baru
+        String idTransaksi = kodeTiket + formattedIncrement + day;
+        
+        // Mulai transaksi database
+        com.setAutoCommit(false);
+        
+        // Simpan transaksi ke tabel transaksi
+        String insertQuery = "INSERT INTO transaksi (id_transaksi, nama_pelanggan, total_harga, tanggal, uang_kembali, uang_masuk) VALUES (?, ?, ?, ?, ?, ?)";
+        PreparedStatement ps = com.prepareStatement(insertQuery);
+        ps.setString(1, idTransaksi);
+        ps.setString(2, Nama);
+        ps.setString(3, Total);
+        ps.setString(4, Tanggal);
+        ps.setString(5, Kembalian);
+        ps.setString(6, Tunai);
+        ps.executeUpdate();
+        
+        // Update stok tiket
+        int jumlahTiket = (int) Jumlah.getValue();
+        String updateStockQuery = "UPDATE tiket SET stock = stock - ? WHERE jenis_tiket = ?";
+        PreparedStatement updatePs = com.prepareStatement(updateStockQuery);
+        updatePs.setInt(1, jumlahTiket);
+        updatePs.setString(2, jenisTiket);
+        updatePs.executeUpdate();
+        
+        // Commit transaksi
+        com.commit();
+        System.out.println("Transaksi berhasil dengan ID: " + idTransaksi);
+        
+        setSpinnerStock(); // Perbarui stok di spinner
+    } catch (SQLException e) {
         try {
-            // Mulai transaksi database
-            com.setAutoCommit(false);
-
-            // Simpan transaksi ke tabel transaksi
-            PreparedStatement ps = com.prepareStatement(insertQuery);
-            ps.setString(1, Nama);
-            ps.setString(2, Total);
-            ps.setString(3, Tanggal);
-            ps.setString(4, Kembalian);
-            ps.setString(5, Tunai);
-            ps.executeUpdate();
-
-            // Ambil jumlah tiket yang dibeli dari JSpinner
-            int jumlahTiket = (int) Jumlah.getValue();
-
-            // Kurangi stok tiket
-            if (jenis.getSelectedItem() != null) { // Validasi JComboBox
-                String jenisTiket = jenis.getSelectedItem().toString();
-                PreparedStatement updatePs = com.prepareStatement(updateStockQuery);
-                updatePs.setInt(1, jumlahTiket);
-                updatePs.setString(2, jenisTiket);
-                updatePs.executeUpdate();
+            if (com != null) {
+                com.rollback(); // Rollback jika terjadi kesalahan
             }
-
-            // Commit transaksi
-            com.commit();
-            System.out.println("Transaksi berhasil disimpan dan stok berhasil diperbarui!");
-
-            // Perbarui Spinner setelah transaksi
-            setSpinnerStock();
-        } catch (SQLException e) {
-            try {
-                if (com != null) {
-                    com.rollback(); // Rollback jika terjadi kesalahan
-                }
-            } catch (SQLException rollbackEx) {
-                rollbackEx.printStackTrace();
+        } catch (SQLException rollbackEx) {
+            rollbackEx.printStackTrace();
+        }
+        e.printStackTrace();
+    } finally {
+        try {
+            if (com != null) {
+                com.setAutoCommit(true);
+                com.close();
             }
-            e.printStackTrace();
-        } finally {
-            try {
-                if (com != null) {
-                    com.setAutoCommit(true); // Kembalikan ke mode auto-commit
-                    com.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
+}
+
+
 
 
 
