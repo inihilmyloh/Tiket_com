@@ -36,7 +36,7 @@ public class Transaksi_dewa extends javax.swing.JPanel {
         initComponents();
         FlatLaf.registerCustomDefaultsSource("crazypanel");
         addListeners();
-        hitungTotal();
+        hitungsatuan();
         tunai.addKeyListener(new KeyAdapter() {
         @Override
         public void keyReleased(KeyEvent e) {
@@ -45,10 +45,10 @@ public class Transaksi_dewa extends javax.swing.JPanel {
     });
        tanggal.setText("");
        Jumlah.setValue(0);
+       satuan.setVisible(true);
 
         hitungKembalian(); // Hitung kembalian otomatis saat aplikasi pertama kali dijalankan
         setSpinnerStock();
-        hitungSatuan();
          pesan.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Ambil data dari field input
@@ -63,14 +63,14 @@ public class Transaksi_dewa extends javax.swing.JPanel {
             }
         });
     }
-    
-    private void hitungSatuan() {
-    if (jenis.getSelectedItem().toString().equalsIgnoreCase("Silver")) {
+    private void hitungsatuan(){
+        if (jenis.getSelectedItem().toString().equalsIgnoreCase("Silver")) {
         satuan.setText("50000");
     } else if (jenis.getSelectedItem().toString().equalsIgnoreCase("Gold")) {
         satuan.setText("100000");
     }
-}
+    }
+ 
     
     private void setSpinnerStock() {
     Connection com = Database.getConnection();
@@ -459,7 +459,11 @@ private void hitungKembalian() {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jenisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jenisActionPerformed
-       
+        if (jenis.getSelectedItem().toString().equalsIgnoreCase("Silver")) {
+        satuan.setText("50000");
+    } else if (jenis.getSelectedItem().toString().equalsIgnoreCase("Gold")) {
+        satuan.setText("100000");
+    }
     }//GEN-LAST:event_jenisActionPerformed
 
     private void totalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_totalActionPerformed
