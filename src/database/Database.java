@@ -5,16 +5,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Database {
-    public static Connection getConnection() {
-        Connection connection = null;
+    private static final String URL = "jdbc:mysql://localhost:3306/loket_tiket"; // Ganti nama_database dengan nama database Anda
+    private static final String USER = "root"; // Ganti dengan username database Anda
+    private static final String PASSWORD = ""; // Ganti dengan password database Anda
+
+    public static Connection getConnection() throws SQLException {
         try {
-            String url = "jdbc:mysql://localhost:3306/loket_tiket"; // Sesuaikan dengan port dan nama database
-            String user = "root";
-            String password = ""; // Kosong karena tidak ada password
-            connection = DriverManager.getConnection(url, user, password);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            Class.forName("com.mysql.cj.jdbc.Driver"); // Driver untuk MySQL
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("JDBC Driver tidak ditemukan", e);
         }
-        return connection;
     }
 }

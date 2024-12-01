@@ -29,6 +29,8 @@ import java.text.*;
 import database.Database;
 import java.time.LocalDate;
 import javax.swing.SpinnerNumberModel;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Transaksi_dewa extends javax.swing.JPanel {
 
@@ -62,7 +64,17 @@ public class Transaksi_dewa extends javax.swing.JPanel {
                 simpanTransaksi(Nama, Total, Tanggal, Tunai, Kembalian);
             }
         });
+         setTanggalOtomatis();
+         
+         
     }
+    
+    private void setTanggalOtomatis() {
+    LocalDate today = LocalDate.now(); // Ambil tanggal hari ini
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Format tanggal
+    tanggal.setText(today.format(formatter)); // Set teks tanggal ke input field
+  }
+    
     private void hitungsatuan(){
         if (jenis.getSelectedItem().toString().equalsIgnoreCase("Silver")) {
         satuan.setText("50000");
@@ -73,33 +85,32 @@ public class Transaksi_dewa extends javax.swing.JPanel {
  
     
     private void setSpinnerStock() {
-    Connection com = Database.getConnection();
     String query = "SELECT stock FROM tiket WHERE jenis_tiket = ?";
-    try {
-        if (jenis.getSelectedItem() != null) {
-            PreparedStatement ps = com.prepareStatement(query);
-            ps.setString(1, jenis.getSelectedItem().toString());
-            ResultSet rs = ps.executeQuery();
-            
-            if (rs.next()) {
-                int stock = rs.getInt("stock");
-                Jumlah.setModel(new SpinnerNumberModel(0, 0, stock, 1)); // Set model spinner
+        try (Connection com = Database.getConnection()) {
+            if (com == null) {
+                throw new SQLException("Koneksi ke database gagal.");
             }
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    } finally {
-        try {
-            if (com != null) com.close();
+
+            if (jenis.getSelectedItem() != null) {
+                PreparedStatement ps = com.prepareStatement(query);
+                ps.setString(1, jenis.getSelectedItem().toString());
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next()) {
+                    int stock = rs.getInt("stock");
+                    Jumlah.setModel(new SpinnerNumberModel(0, 0, stock, 1));
+                } else {
+                    System.out.println("Data tidak ditemukan untuk jenis tiket: " + jenis.getSelectedItem());
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
+            System.err.println("Error saat mengatur spinner stock: " + e.getMessage());
         }
     }
-}
-
     
-    // Tambahkan listener untuk perhitungan otomatis
-// Tambahkan listener untuk perhitungan otomatis
+    
+   
 private void addListeners() {
     // Listener untuk JSpinner (Jumlah)
     Jumlah.addChangeListener(e -> {
@@ -111,7 +122,7 @@ private void addListeners() {
     jenis.addActionListener(e -> {
         hitungTotal();
         hitungKembalian();
-        setSpinnerStock(); // Pastikan spinner stok diperbarui
+        setSpinnerStock(); 
     });
 
     // Listener untuk JTextField (tunai)
@@ -196,82 +207,60 @@ private void hitungKembalian() {
 }
 
     public void simpanTransaksi(String Nama, String Total, String Tanggal, String Tunai, String Kembalian) {
-    Connection com = Database.getConnection();
+    if (Nama.isEmpty() || Total.isEmpty() || Tanggal.isEmpty() || Tunai.isEmpty()) {
+        System.out.println("Semua field harus diisi.");
+        return;
+    }
     
-    // Ambil jenis tiket
-    String jenisTiket = jenis.getSelectedItem().toString();
-    String kodeTiket = jenisTiket.equalsIgnoreCase("Gold") ? "G" : "S";
-    
-    try {
-        // Ambil nomor transaksi terakhir (terbesar)
+    try (Connection com = Database.getConnection()) {
+        String jenisTiket = jenis.getSelectedItem().toString();
+        String kodeTiket = jenisTiket.equalsIgnoreCase("Gold") ? "G" : "S";
+        
+        // Ambil nomor transaksi terakhir
         String lastIdQuery = "SELECT id_transaksi FROM transaksi WHERE id_transaksi LIKE ? ORDER BY id_transaksi DESC LIMIT 1";
         PreparedStatement lastIdPs = com.prepareStatement(lastIdQuery);
-        lastIdPs.setString(1, kodeTiket + "%"); // Filter berdasarkan jenis tiket (G atau S)
+        lastIdPs.setString(1, kodeTiket + "%");
         ResultSet rs = lastIdPs.executeQuery();
         
-        int nextNumber = 1; // Default untuk transaksi pertama
-        
+        int nextNumber = 1;
         if (rs.next()) {
-            // Ambil bagian angka dari id_transaksi (misalnya dari G0214 → 02)
             String lastId = rs.getString("id_transaksi");
-            int lastNumber = Integer.parseInt(lastId.substring(1, 3)); // Ambil "02"
-            nextNumber = lastNumber + 1; // Increment ke transaksi berikutnya
+            int lastNumber = Integer.parseInt(lastId.substring(1, 3));
+            nextNumber = lastNumber + 1;
         }
         
-        // Format auto-increment dengan dua digit (misalnya: 02, 03, ...)
         String formattedIncrement = String.format("%02d", nextNumber);
-        
-        // Ambil dua digit tanggal dari input tanggal (format yyyy-mm-dd)
-        String day = Tanggal.substring(8, 10); 
-        
-        // Gabungkan semua bagian menjadi ID transaksi baru
+        String day = Tanggal.substring(8, 10);
         String idTransaksi = kodeTiket + formattedIncrement + day;
         
-        // Mulai transaksi database
         com.setAutoCommit(false);
         
-        // Simpan transaksi ke tabel transaksi
+        // Simpan transaksi
         String insertQuery = "INSERT INTO transaksi (id_transaksi, nama_pelanggan, total_harga, tanggal, uang_kembali, uang_masuk) VALUES (?, ?, ?, ?, ?, ?)";
-        PreparedStatement ps = com.prepareStatement(insertQuery);
-        ps.setString(1, idTransaksi);
-        ps.setString(2, Nama);
-        ps.setString(3, Total);
-        ps.setString(4, Tanggal);
-        ps.setString(5, Kembalian);
-        ps.setString(6, Tunai);
-        ps.executeUpdate();
+        try (PreparedStatement ps = com.prepareStatement(insertQuery)) {
+            ps.setString(1, idTransaksi);
+            ps.setString(2, Nama);
+            ps.setString(3, Total);
+            ps.setString(4, Tanggal);
+            ps.setString(5, Kembalian);
+            ps.setString(6, Tunai);
+            ps.executeUpdate();
+        }
         
-        // Update stok tiket
+        // Update stok
         int jumlahTiket = (int) Jumlah.getValue();
         String updateStockQuery = "UPDATE tiket SET stock = stock - ? WHERE jenis_tiket = ?";
-        PreparedStatement updatePs = com.prepareStatement(updateStockQuery);
-        updatePs.setInt(1, jumlahTiket);
-        updatePs.setString(2, jenisTiket);
-        updatePs.executeUpdate();
+        try (PreparedStatement updatePs = com.prepareStatement(updateStockQuery)) {
+            updatePs.setInt(1, jumlahTiket);
+            updatePs.setString(2, jenisTiket);
+            updatePs.executeUpdate();
+        }
         
-        // Commit transaksi
         com.commit();
         System.out.println("Transaksi berhasil dengan ID: " + idTransaksi);
-        
-        setSpinnerStock(); // Perbarui stok di spinner
+        setSpinnerStock();
     } catch (SQLException e) {
-        try {
-            if (com != null) {
-                com.rollback(); // Rollback jika terjadi kesalahan
-            }
-        } catch (SQLException rollbackEx) {
-            rollbackEx.printStackTrace();
-        }
         e.printStackTrace();
-    } finally {
-        try {
-            if (com != null) {
-                com.setAutoCommit(true);
-                com.close();
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
     }
 }
 
@@ -308,7 +297,6 @@ private void hitungKembalian() {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         total = new javax.swing.JTextField();
         kembalian = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
@@ -413,14 +401,6 @@ private void hitungKembalian() {
         jLabel7.setText("Kembali");
         panelRound1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 160, -1, -1));
 
-        jButton1.setText("...");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        panelRound1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 300, -1, -1));
-
         total.setEditable(false);
         total.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -454,10 +434,6 @@ private void hitungKembalian() {
         
     }//GEN-LAST:event_tanggalActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        dateChooser1.showPopup();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void jenisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jenisActionPerformed
         if (jenis.getSelectedItem().toString().equalsIgnoreCase("Silver")) {
         satuan.setText("50000");
@@ -478,7 +454,6 @@ private void hitungKembalian() {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSpinner Jumlah;
     private tanggal.DateChooser dateChooser1;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
