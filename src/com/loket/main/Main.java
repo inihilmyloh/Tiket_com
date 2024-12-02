@@ -10,6 +10,7 @@ import java.awt.Color;
 import javax.swing.JComponent;
 
 public class Main extends javax.swing.JFrame {
+
     private f_Home home;
     private Form_laporan form1;
     private test1 form2;
@@ -18,7 +19,6 @@ public class Main extends javax.swing.JFrame {
     public Main() {
         initComponents();
         setBackground(new Color(0, 0, 0, 0));
-        menu.initMoving(Main.this);
         home = new f_Home();
         form1 = new Form_laporan();
         form2 = new test1();
@@ -41,7 +41,8 @@ public class Main extends javax.swing.JFrame {
 
         setForm(new f_Home());
     }
-        private void setForm(JComponent com) {
+
+    private void setForm(JComponent com) {
         mainPanel.removeAll();
         mainPanel.add(com);
         mainPanel.repaint();

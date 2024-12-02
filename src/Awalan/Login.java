@@ -18,8 +18,9 @@ import komponen.pesan_pwsalah;
 import komponen.pesan_usernamedanpwsalah;
 import komponen.pesan_usernamesalah;
 import komponen.pesan_usernatidakditemukan;
-import main.Main;
+//import main.Main;
 import raven.glasspanepopup.GlassPanePopup;
+import com.loket.main.Main;
 
 /**
  *
