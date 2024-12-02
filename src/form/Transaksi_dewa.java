@@ -213,8 +213,9 @@ private void hitungKembalian() {
     }
     
     try (Connection com = Database.getConnection()) {
+        // Ubah jenis tiket menjadi angka 1 untuk Silver dan 2 untuk Gold
         String jenisTiket = jenis.getSelectedItem().toString();
-        String kodeTiket = jenisTiket.equalsIgnoreCase("Gold") ? "G" : "S";
+        String kodeTiket = jenisTiket.equalsIgnoreCase("Silver") ? "1" : "2"; 
         
         // Ambil nomor transaksi terakhir
         String lastIdQuery = "SELECT id_transaksi FROM transaksi WHERE id_transaksi LIKE ? ORDER BY id_transaksi DESC LIMIT 1";
@@ -225,13 +226,13 @@ private void hitungKembalian() {
         int nextNumber = 1;
         if (rs.next()) {
             String lastId = rs.getString("id_transaksi");
-            int lastNumber = Integer.parseInt(lastId.substring(1, 3));
+            int lastNumber = Integer.parseInt(lastId.substring(1, 3)); // Ambil angka autoincrement
             nextNumber = lastNumber + 1;
         }
         
         String formattedIncrement = String.format("%02d", nextNumber);
-        String day = Tanggal.substring(8, 10);
-        String idTransaksi = kodeTiket + formattedIncrement + day;
+        String day = Tanggal.substring(8, 10); // Ambil tanggal (2 digit terakhir dari tanggal)
+        String idTransaksi = kodeTiket + formattedIncrement + day; 
         
         com.setAutoCommit(false);
         
@@ -268,6 +269,7 @@ private void hitungKembalian() {
 
 
 
+
     
 
     @Override
@@ -282,7 +284,6 @@ private void hitungKembalian() {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        dateChooser1 = new tanggal.DateChooser();
         panelRound1 = new komponen.PanelRound();
         panelRound3 = new komponen.PanelRound();
         jLabel1 = new javax.swing.JLabel();
@@ -304,9 +305,6 @@ private void hitungKembalian() {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         Jumlah = new javax.swing.JSpinner();
-
-        dateChooser1.setForeground(new java.awt.Color(102, 102, 255));
-        dateChooser1.setTextRefernce(tanggal);
 
         setBackground(new java.awt.Color(228, 228, 228));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -453,7 +451,6 @@ private void hitungKembalian() {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSpinner Jumlah;
-    private tanggal.DateChooser dateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
