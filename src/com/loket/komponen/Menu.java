@@ -1,5 +1,6 @@
 package com.loket.komponen;
 
+import com.loket.event.EventMenuPilihan;
 import com.loket.model.m_Menu;
 import java.awt.Color;
 import java.awt.GradientPaint;
@@ -12,6 +13,13 @@ import java.awt.event.MouseMotionAdapter;
 import javax.swing.JFrame;
 
 public class Menu extends javax.swing.JPanel {
+
+    private EventMenuPilihan event;
+
+    public void addEventMenuPilihan(EventMenuPilihan event) {
+        this.event = event;
+        listMenu1.addEventMenuPilihan(event);
+    }
 
     public Menu() {
         initComponents();
