@@ -73,7 +73,7 @@ public class MenuItem extends javax.swing.JPanel {
 
     @Override
     protected void paintComponent(Graphics grphcs) {
-        if (pilihan) {
+        if (pilihan || over) {
             Graphics2D g2 = (Graphics2D) grphcs;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             if (pilihan) {

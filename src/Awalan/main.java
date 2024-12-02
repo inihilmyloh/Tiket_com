@@ -19,28 +19,26 @@ public class main extends javax.swing.JFrame {
     public main() {
         initComponents();
         GlassPanePopup.install(this);
-        Login login=new Login();
-        Register register=new Register();
+        Login login = new Login(this);
+        Register register = new Register();
         slide.setAnimate(15);
-        slide.init(login,register);
-        login.addEventRegister(new ActionListener(){
+        slide.init(login, register);
+        login.addEventRegister(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 slide.show(1);
             }
-            
+
         });
-        register.addEventlogin(new ActionListener(){
+        register.addEventlogin(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 slide.show(0);
-                
+
             }
-            
+
         });
 
-      
-        
     }
 
     @SuppressWarnings("unchecked")
@@ -169,7 +167,6 @@ public class main extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-   
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

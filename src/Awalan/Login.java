@@ -27,24 +27,20 @@ import com.loket.main.Main;
  * @author ASUS
  */
 public class Login extends javax.swing.JPanel {
-    
+
     public static Connection com;
 
+    private JFrame parentFrame;
 
- 
-    public Login() {
+    public Login(JFrame parentFrame) {
+        this.parentFrame = parentFrame;
         initComponents();
-        
+
     }
-    
-    public void addEventRegister(ActionListener event){
+
+    public void addEventRegister(ActionListener event) {
         register.addActionListener(event);
     }
-    
-    
-    
-    
-    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -164,81 +160,82 @@ public class Login extends javax.swing.JPanel {
     }//GEN-LAST:event_jenengActionPerformed
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-                                   
-    String nama, password, passDB = null,level = null;
-    String url = "jdbc:mysql://localhost:3306/loket_tiket";
-    String suser = "root";
-    String spass = "";
-    
-    try {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        com = DriverManager.getConnection(url, suser, spass);
-        
-        if (jeneng.getText().isEmpty()) {
-            GlassPanePopup.showPopup(new pesan_usernamesalah());
-            return;
-        }
-        
-        if (pw.getText().isEmpty()) {
-            GlassPanePopup.showPopup(new pesan_pwsalah());
-            return;
-        }
-        
-        nama = jeneng.getText();
-        password = passhash(pw.getText());
-        
-        String query = "SELECT * FROM login WHERE username = ?";
-        
-        PreparedStatement pstmt = com.prepareStatement(query);
-        pstmt.setString(1, nama);
-        ResultSet ler = pstmt.executeQuery();
-        
-        if (ler.next()) {
-            level = ler.getString("level");
-            passDB = ler.getString("password");
-            if (password.equals(passDB)) {
-                if (level.equalsIgnoreCase("Admin")) {
-                    Main menuAdmin = new Main();
-                    menuAdmin.setVisible(true);
-                
-                } else if (level.equalsIgnoreCase("Pegawai")) {
-                    Main menuPegawai = new Main();
-                    menuPegawai.setVisible(true);
-                 
+
+        String nama, password, passDB = null, level = null;
+        String url = "jdbc:mysql://localhost:3306/loket_tiket";
+        String suser = "root";
+        String spass = "";
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            com = DriverManager.getConnection(url, suser, spass);
+
+            if (jeneng.getText().isEmpty()) {
+                GlassPanePopup.showPopup(new pesan_usernamesalah());
+                return;
+            }
+
+            if (pw.getText().isEmpty()) {
+                GlassPanePopup.showPopup(new pesan_pwsalah());
+                return;
+            }
+
+            nama = jeneng.getText();
+            password = passhash(pw.getText());
+
+            String query = "SELECT * FROM login WHERE username = ?";
+
+            PreparedStatement pstmt = com.prepareStatement(query);
+            pstmt.setString(1, nama);
+            ResultSet ler = pstmt.executeQuery();
+
+            if (ler.next()) {
+                level = ler.getString("level");
+                passDB = ler.getString("password");
+                if (password.equals(passDB)) {
+                    if (level.equalsIgnoreCase("Admin")) {
+                        Main menuAdmin = new Main();
+                        menuAdmin.setVisible(true);
+                        parentFrame.dispose();
+
+                    } else if (level.equalsIgnoreCase("Pegawai")) {
+                        Main menuPegawai = new Main();
+                        menuPegawai.setVisible(true);
+                        parentFrame.dispose();
+                    }
+                } else {
+                    GlassPanePopup.showPopup(new pesan_usernamedanpwsalah());
                 }
             } else {
-                GlassPanePopup.showPopup(new pesan_usernamedanpwsalah());
+                GlassPanePopup.showPopup(new pesan_usernatidakditemukan());
             }
-        } else {
-            GlassPanePopup.showPopup(new pesan_usernatidakditemukan());
+
+            jeneng.setText("");
+            pw.setText("");
+
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println("error: " + e.getMessage());
         }
-        
-        jeneng.setText("");
-        pw.setText("");
-        
-    } catch (ClassNotFoundException | SQLException e) {
-        System.out.println("error: " + e.getMessage());
-    }
 
     }//GEN-LAST:event_loginActionPerformed
 
     private void registerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerActionPerformed
-        
+
     }//GEN-LAST:event_registerActionPerformed
 
-     public static String passhash(String password){
+    public static String passhash(String password) {
         try {
-            MessageDigest md=MessageDigest.getInstance("SHA");
+            MessageDigest md = MessageDigest.getInstance("SHA");
             md.update(password.getBytes());
-            byte[] rbt=md.digest();
-            StringBuilder sb=new StringBuilder();
-            for(byte b:rbt){
+            byte[] rbt = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for (byte b : rbt) {
                 sb.append(String.format("%02x", b));
             }
             return sb.toString();
         } catch (Exception e) {
         }
-         return null;
+        return null;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
@@ -250,8 +247,6 @@ public class Login extends javax.swing.JPanel {
     private swing.PasswordField pw;
     private javax.swing.JButton register;
     // End of variables declaration//GEN-END:variables
-
-   
 
     void setLocationRelativeTo(Object object) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody

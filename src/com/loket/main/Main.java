@@ -1,5 +1,6 @@
 package com.loket.main;
 
+import Awalan.main;
 import com.loket.event.EventMenuPilihan;
 import com.loket.form.CRUD_ADE;
 import com.loket.form.Transaksi_dewa;
@@ -8,6 +9,7 @@ import com.loket.form.form_test2;
 import com.loket.swing.ScrollBar;
 import java.awt.Color;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 
 public class Main extends javax.swing.JFrame {
 
@@ -35,6 +37,8 @@ public class Main extends javax.swing.JFrame {
                     setForm(form2);
                 } else if (index == 3) {
                     setForm(form3);
+                } else if (index == 5) {
+                    logoutAction();
                 }
             }
         });
@@ -47,6 +51,27 @@ public class Main extends javax.swing.JFrame {
         mainPanel.add(com);
         mainPanel.repaint();
         mainPanel.revalidate();
+    }
+
+    private void logoutAction() {
+        int response = JOptionPane.showConfirmDialog(this,
+                "Apakah Anda yakin ingin logout?",
+                "Konfirmasi Logout",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        // Jika pengguna memilih Yes, lakukan logout
+        if (response == JOptionPane.YES_OPTION) {
+            // Menutup frame utama
+            this.dispose();
+
+            // Menampilkan halaman login
+            main loginFrame = new main();
+            loginFrame.setVisible(true);
+            loginFrame.pack();
+            loginFrame.setLocationRelativeTo(null); // Memposisikan login di tengah layar
+        }
+        // Jika pengguna memilih No, tidak ada aksi yang dilakukan (logout dibatalkan)
     }
 
     @SuppressWarnings("unchecked")

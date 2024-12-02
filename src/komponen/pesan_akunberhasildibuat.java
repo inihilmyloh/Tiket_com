@@ -11,37 +11,31 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
 import com.loket.main.Main;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import raven.glasspanepopup.GlassPanePopup;
 
-
 public class pesan_akunberhasildibuat extends javax.swing.JPanel {
-    
 
-    
     public pesan_akunberhasildibuat() {
         initComponents();
         setOpaque(false);
-        Main utama=new Main();
+        Main utama = new Main();
         if (utama.isVisible()) {
             System.exit(0);
         } else {
-    System.out.println("Frame utama tidak terlihat");
-}
+            System.out.println("Frame utama tidak terlihat");
+        }
     }
-
-    
-   
 
     @Override
     protected void paintComponent(Graphics g) {
-        Graphics2D g2=(Graphics2D)g.create();
+        Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setColor(getBackground());
-        g2.fill(new RoundRectangle2D.Double(0, 0, getWidth(),getHeight(), 15, 15));
-         
+        g2.fill(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), 15, 15));
+
     }
-    
-    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -109,13 +103,16 @@ public class pesan_akunberhasildibuat extends javax.swing.JPanel {
 
     private void signActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signActionPerformed
         GlassPanePopup.closePopupLast();
-        Main awalFrame=new Main();
-                    awalFrame.setVisible(true);
-                    awalFrame.pack();
-                    awalFrame.setLocationRelativeTo(null);
-                    
+        JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        if (parentFrame != null) {
+            parentFrame.dispose();  // Menutup frame Register
+        }
+        Main awalFrame = new Main();
+        awalFrame.setVisible(true);
+        awalFrame.pack();
+        awalFrame.setLocationRelativeTo(null);
     }//GEN-LAST:event_signActionPerformed
-    
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
