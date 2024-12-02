@@ -1,10 +1,10 @@
 package com.loket.main;
 
 import com.loket.event.EventMenuPilihan;
-import com.loket.form.Form_laporan;
+import com.loket.form.CRUD_ADE;
+import com.loket.form.Transaksi_dewa;
 import com.loket.form.f_Home;
 import com.loket.form.form_test2;
-import com.loket.form.test1;
 import com.loket.swing.ScrollBar;
 import java.awt.Color;
 import javax.swing.JComponent;
@@ -12,16 +12,16 @@ import javax.swing.JComponent;
 public class Main extends javax.swing.JFrame {
 
     private f_Home home;
-    private Form_laporan form1;
-    private test1 form2;
+    private CRUD_ADE form1;
+    private Transaksi_dewa form2;
     private form_test2 form3;
 
     public Main() {
         initComponents();
         setBackground(new Color(0, 0, 0, 0));
         home = new f_Home();
-        form1 = new Form_laporan();
-        form2 = new test1();
+        form1 = new CRUD_ADE();
+        form2 = new Transaksi_dewa();
         form3 = new form_test2();
         menu.initMoving(Main.this);
         menu.addEventMenuPilihan(new EventMenuPilihan() {
@@ -61,16 +61,7 @@ public class Main extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
 
-        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
-        mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+        mainPanel.setLayout(new java.awt.BorderLayout());
 
         javax.swing.GroupLayout pn_Border1Layout = new javax.swing.GroupLayout(pn_Border1);
         pn_Border1.setLayout(pn_Border1Layout);

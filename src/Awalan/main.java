@@ -7,7 +7,7 @@ package Awalan;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import komponen.pesan_akunberhasildibuat;
-import main.Main;
+import com.loket.main.Main;
 import raven.glasspanepopup.GlassPanePopup;
 
 /**

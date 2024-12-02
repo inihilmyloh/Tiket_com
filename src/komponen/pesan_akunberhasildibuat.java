@@ -10,7 +10,7 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
-import main.Main;
+import com.loket.main.Main;
 import raven.glasspanepopup.GlassPanePopup;
 
 
