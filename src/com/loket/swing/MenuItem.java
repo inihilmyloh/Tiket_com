@@ -11,6 +11,7 @@ import java.awt.RenderingHints;
 public class MenuItem extends javax.swing.JPanel {
 
     private boolean pilihan;
+    private boolean over;
 
     public MenuItem(m_Menu data) {
         initComponents();
@@ -29,6 +30,11 @@ public class MenuItem extends javax.swing.JPanel {
 
     public void setPilihan(boolean pilihan) {
         this.pilihan = pilihan;
+        repaint();
+    }
+
+    public void setOver(boolean over) {
+        this.over = over;
         repaint();
     }
 
@@ -67,11 +73,15 @@ public class MenuItem extends javax.swing.JPanel {
 
     @Override
     protected void paintComponent(Graphics grphcs) {
-        if (pilihan) {
+        if (pilihan || over) {
             Graphics2D g2 = (Graphics2D) grphcs;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(new Color(255, 255, 255, 80));
-            g2.fillRoundRect(10, 0, getWidth()-20, getHeight(), 5, 5);
+            if (pilihan) {
+                g2.setColor(new Color(255, 255, 255, 80));
+            } else {
+                g2.setColor(new Color(255, 255, 255, 20));
+            }
+            g2.fillRoundRect(10, 0, getWidth() - 20, getHeight(), 5, 5);
         }
         super.paintComponent(grphcs);
     }
