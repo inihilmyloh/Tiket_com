@@ -13,7 +13,7 @@ public class f_Home extends javax.swing.JPanel implements Main.Refreshable {
         card1.setData(DataFetcher.getCardData("silver", "/com/loket/icon/tiket1.png", "Stock Silver"));
         card2.setData(DataFetcher.getCardData("gold", "/com/loket/icon/tiket1.png", "Stock Gold"));
         card3.setData(DataFetcher.getPendapatan("/com/loket/icon/profit.png", "Total Pendapatan"));
-        // card1.setData(new m_Card(new ImageIcon(getClass().getResource("/com/loket/icon/profit.png")), "Total Pendapatan", "Rp 3000000", "Increased by 70%"));
+        //card1.setData(new m_Card(new ImageIcon(getClass().getResource("/com/loket/icon/profit.png")), "Total Pendapatan", "Rp 3000000", "Increased by 70%"));
         //card2.setData(new m_Card(new ImageIcon(getClass().getResource("/com/loket/icon/profit.png")), "Total Pendapatan", "Rp 3000000", "Increased by 70%"));
         //card3.setData(new m_Card(new ImageIcon(getClass().getResource("/com/loket/icon/profit.png")), "Total Pendapatan", "Rp 3000000", "Increased by 70%"));
     }

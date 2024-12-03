@@ -16,6 +16,7 @@ import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import com.loket.main.Main;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -33,7 +34,7 @@ import javax.swing.SpinnerNumberModel;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class Transaksi_dewa extends javax.swing.JPanel {
+public class Transaksi_dewa extends javax.swing.JPanel implements Main.Refreshable {
 
     public Transaksi_dewa() {
         initComponents();
@@ -67,6 +68,11 @@ public class Transaksi_dewa extends javax.swing.JPanel {
         });
         setTanggalOtomatis();
 
+    }
+
+    @Override
+    public void refresh() {
+        stock1.updateStock(); // Muat ulang data saat diminta refresh
     }
 
     private void setTanggalOtomatis() {
@@ -292,13 +298,15 @@ public class Transaksi_dewa extends javax.swing.JPanel {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         Jumlah = new javax.swing.JSpinner();
-        stock1 = new com.loket.form.stock();
         jLabel11 = new javax.swing.JLabel();
+        stock1 = new com.loket.komponen.stock();
 
-        setBackground(new java.awt.Color(228, 228, 228));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         panelRound1.setBackground(new java.awt.Color(255, 255, 255));
+        panelRound1.setMinimumSize(new java.awt.Dimension(915, 574));
+        panelRound1.setPreferredSize(new java.awt.Dimension(915, 574));
         panelRound1.setRoundBottomLeft(16);
         panelRound1.setRoundBottomRight(16);
         panelRound1.setRoundTopLeft(16);
@@ -307,10 +315,10 @@ public class Transaksi_dewa extends javax.swing.JPanel {
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setText("Stock Tiket");
-        panelRound1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 40, -1, -1));
+        panelRound1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 100, -1, -1));
 
         satuan.setEditable(false);
-        panelRound1.add(satuan, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 140, 200, 40));
+        panelRound1.add(satuan, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 140, 190, 40));
 
         jenis.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Silver", "Gold" }));
         jenis.addActionListener(new java.awt.event.ActionListener() {
@@ -381,13 +389,13 @@ public class Transaksi_dewa extends javax.swing.JPanel {
         jLabel10.setText("Jumlah Tiket");
         panelRound1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 130, -1, -1));
         panelRound1.add(Jumlah, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 150, 70, -1));
-        panelRound1.add(stock1, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 60, 330, -1));
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel11.setText("TRANSAKSI PEMBELIAN");
         panelRound1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, -1, -1));
+        panelRound1.add(stock1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 120, 410, 240));
 
-        add(panelRound1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 900, 570));
+        add(panelRound1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 910, 580));
     }// </editor-fold>//GEN-END:initComponents
 
     private void namaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_namaActionPerformed
@@ -433,7 +441,7 @@ public class Transaksi_dewa extends javax.swing.JPanel {
     private komponen.PanelRound panelRound1;
     private komponen.Button pesan;
     private javax.swing.JTextField satuan;
-    private com.loket.form.stock stock1;
+    private com.loket.komponen.stock stock1;
     private javax.swing.JTextField tanggal;
     private javax.swing.JTextField total;
     private javax.swing.JTextField tunai;

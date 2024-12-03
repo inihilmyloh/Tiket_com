@@ -1,7 +1,7 @@
-package com.loket.form;
+package com.loket.komponen;
 
-import form.*;
-import com.loket.form.*;
+import com.loket.main.Main;
+import com.loket.main.Main.Refreshable;
 import com.loket.model.m_Card;
 import com.loket.service.DataFetcher;
 import javax.swing.ImageIcon;
@@ -10,15 +10,17 @@ public class stock extends javax.swing.JPanel {
 
     public stock() {
         initComponents();
-        card1.setData(DataFetcher.getCardData("silver", "/com/loket/icon/stock.png", "Stock Silver"));
-        card2.setData(DataFetcher.getCardData("gold", "/com/loket/icon/stock.png", "Stock Gold"));
+        card1.setData(DataFetcher.getCardData("silver", "/com/loket/icon/tiket1.png", "Stock Silver"));
+        card2.setData(DataFetcher.getCardData("gold", "/com/loket/icon/tiket1.png", "Stock Gold"));
+
+        // card1.setData(new m_Card(new ImageIcon(getClass().getResource("/com/loket/icon/profit.png")), "Total Pendapatan", "Rp 3000000", "Increased by 70%"));
+        //card2.setData(new m_Card(new ImageIcon(getClass().getResource("/com/loket/icon/profit.png")), "Total Pendapatan", "Rp 3000000", "Increased by 70%"));
+        //card3.setData(new m_Card(new ImageIcon(getClass().getResource("/com/loket/icon/profit.png")), "Total Pendapatan", "Rp 3000000", "Increased by 70%"));
     }
 
     public void updateStock() {
-        // Perbarui data untuk Stock Silver
-        card1.setData(DataFetcher.getCardData("silver", "/com/loket/icon/stock.png", "Stock Silver"));
-        // Perbarui data untuk Stock Gold
-        card2.setData(DataFetcher.getCardData("gold", "/com/loket/icon/stock.png", "Stock Gold"));
+        card1.setData(DataFetcher.getCardData("silver", "/com/loket/icon/tiket1.png", "Stock Silver"));
+        card2.setData(DataFetcher.getCardData("gold", "/com/loket/icon/tiket1.png", "Stock Gold"));
 
         // Tambahkan log jika diperlukan untuk debugging
         System.out.println("Stock updated!");
@@ -32,7 +34,7 @@ public class stock extends javax.swing.JPanel {
         card1 = new com.loket.komponen.Card();
         card2 = new com.loket.komponen.Card();
 
-        setOpaque(false);
+        setBackground(new java.awt.Color(255, 255, 255));
 
         panel.setLayout(new java.awt.GridLayout(1, 0, 10, 0));
 
@@ -50,7 +52,7 @@ public class stock extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 190, Short.MAX_VALUE)
+                .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
                 .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
@@ -58,7 +60,7 @@ public class stock extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

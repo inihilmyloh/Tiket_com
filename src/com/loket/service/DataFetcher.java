@@ -23,14 +23,31 @@ public class DataFetcher {
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 // Ambil data dari database
-                String values = String.valueOf(resultSet.getInt("stock")); // Stock sebagai value
-                String deskripsi = "Harga: Rp" + resultSet.getInt("harga"); // Harga sebagai deskripsi
-
+                int harga = resultSet.getInt("harga");
+                int stock = resultSet.getInt("stock");
+                NumberFormat formatter = NumberFormat.getNumberInstance(new Locale("id", "ID"));
+                String formattedHarga = "Rp " + formatter.format(harga);
+                // Buat string untuk deskripsi
+                String deskripsi = "Harga: " + formattedHarga;
+                // Stock sebagai value
+                String values = String.valueOf(stock);
                 // Buat m_Card
                 card = new m_Card(new ImageIcon(DataFetcher.class.getResource(iconPath)), title, values, deskripsi);
+            } else {
+                // Tambahkan log jika tidak ada data
+                System.out.println("Data tidak ditemukan untuk jenis tiket: " + jenisTiket);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        // Jika data null, kembalikan objek default (opsional)
+        if (card == null) {
+            card = new m_Card(
+                    new ImageIcon(DataFetcher.class.getResource(iconPath)),
+                    title,
+                    "0",
+                    "Data tidak ditemukan"
+            );
         }
         return card;
     }
@@ -39,7 +56,7 @@ public class DataFetcher {
         m_Card card = null;
         try (Connection connection = Database.getConnection()) {
             // Query untuk menghitung total uang masuk dari tabel transaksi
-            String query = "SELECT SUM(uang_masuk) AS total_pendapatan FROM transaksi";
+            String query = "SELECT SUM(total_harga) AS total_pendapatan FROM transaksi";
             PreparedStatement statement = connection.prepareStatement(query);
 
             // Eksekusi query
@@ -57,9 +74,20 @@ public class DataFetcher {
 
                 // Buat m_Card
                 card = new m_Card(new ImageIcon(DataFetcher.class.getResource(iconPath)), title, formattedPendapatan, deskripsi);
+            } else {
+                // Tambahkan log jika tidak ada data
+                System.out.println("Data tidak ditemukan untuk pendapatan: ");
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }        // Jika data null, kembalikan objek default (opsional)
+        if (card == null) {
+            card = new m_Card(
+                    new ImageIcon(DataFetcher.class.getResource(iconPath)),
+                    title,
+                    "0",
+                    "Data tidak ditemukan"
+            );
         }
         return card;
     }
