@@ -6,6 +6,8 @@ import javax.swing.ImageIcon;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class DataFetcher {
 
@@ -32,22 +34,29 @@ public class DataFetcher {
         }
         return card;
     }
+
     public static m_Card getPendapatan(String iconPath, String title) {
         m_Card card = null;
         try (Connection connection = Database.getConnection()) {
-            // Query ke tabel transaksi untuk menjumlahkan uang_masuk
+            // Query untuk menghitung total uang masuk dari tabel transaksi
             String query = "SELECT SUM(uang_masuk) AS total_pendapatan FROM transaksi";
             PreparedStatement statement = connection.prepareStatement(query);
 
             // Eksekusi query
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                // Ambil data total pendapatan
-                String values = "Rp" + resultSet.getInt("total_pendapatan"); // Total Pendapatan sebagai value
-                String deskripsi = "Increased by 70%"; // Contoh deskripsi
+                // Ambil total pendapatan
+                int totalPendapatan = resultSet.getInt("total_pendapatan");
+
+                // Format angka dengan Locale Indonesia
+                NumberFormat formatter = NumberFormat.getNumberInstance(new Locale("id", "ID"));
+                String formattedPendapatan = "Rp " + formatter.format(totalPendapatan);
+
+                // Buat deskripsi
+                String deskripsi = "Total Pendapatan yang diterima";
 
                 // Buat m_Card
-                card = new m_Card(new ImageIcon(DataFetcher.class.getResource(iconPath)), title, values, deskripsi);
+                card = new m_Card(new ImageIcon(DataFetcher.class.getResource(iconPath)), title, formattedPendapatan, deskripsi);
             }
         } catch (Exception e) {
             e.printStackTrace();
