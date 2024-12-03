@@ -161,61 +161,67 @@ public class Login extends javax.swing.JPanel {
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
 
-        String nama, password, passDB = null, level = null;
-        String url = "jdbc:mysql://localhost:3306/loket_tiket";
-        String suser = "root";
-        String spass = "";
+    String url = "jdbc:mysql://localhost:3306/loket_tiket"; // Ganti sesuai konfigurasi database Anda
+    String suser = "root"; // Ganti dengan username database Anda
+    String spass = ""; // Ganti dengan password database Anda
 
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            com = DriverManager.getConnection(url, suser, spass);
+    // Validasi input kosong
+    if (jeneng.getText().isEmpty()) {
+        GlassPanePopup.showPopup(new pesan_usernamesalah());
+        return;
+    }
 
-            if (jeneng.getText().isEmpty()) {
-                GlassPanePopup.showPopup(new pesan_usernamesalah());
-                return;
-            }
+    if (pw.getText().isEmpty()) {
+        GlassPanePopup.showPopup(new pesan_pwsalah());
+        return;
+    }
 
-            if (pw.getText().isEmpty()) {
-                GlassPanePopup.showPopup(new pesan_pwsalah());
-                return;
-            }
+    String nama = jeneng.getText();
+    String password = passhash(pw.getText()); // Hash password yang diinputkan
 
-            nama = jeneng.getText();
-            password = passhash(pw.getText());
+    try {
+        // Koneksi ke database
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        com = DriverManager.getConnection(url, suser, spass);
 
-            String query = "SELECT * FROM login WHERE username = ?";
+        // Query untuk memeriksa username dan password
+        String query = "SELECT password FROM login WHERE username = ?";
+        PreparedStatement pstmt = com.prepareStatement(query);
+        pstmt.setString(1, nama);
+        ResultSet resultSet = pstmt.executeQuery();
 
-            PreparedStatement pstmt = com.prepareStatement(query);
-            pstmt.setString(1, nama);
-            ResultSet ler = pstmt.executeQuery();
+        if (resultSet.next()) {
+            // Ambil password dari database
+            String passDB = resultSet.getString("password");
 
-            if (ler.next()) {
-                level = ler.getString("level");
-                passDB = ler.getString("password");
-                if (password.equals(passDB)) {
-                    if (level.equalsIgnoreCase("Admin")) {
-                        Main menuAdmin = new Main();
-                        menuAdmin.setVisible(true);
-                        parentFrame.dispose();
-
-                    } else if (level.equalsIgnoreCase("Pegawai")) {
-                        Main menuPegawai = new Main();
-                        menuPegawai.setVisible(true);
-                        parentFrame.dispose();
-                    }
-                } else {
-                    GlassPanePopup.showPopup(new pesan_usernamedanpwsalah());
-                }
+            // Periksa kecocokan password
+            if (password.equals(passDB)) {
+                // Jika login berhasil, buka aplikasi utama
+                Main mainApp = new Main();
+                mainApp.setVisible(true);
+                parentFrame.dispose(); // Menutup jendela login
             } else {
-                GlassPanePopup.showPopup(new pesan_usernatidakditemukan());
+                // Jika password salah
+                GlassPanePopup.showPopup(new pesan_usernamedanpwsalah());
             }
-
-            jeneng.setText("");
-            pw.setText("");
-
-        } catch (ClassNotFoundException | SQLException e) {
-            System.out.println("error: " + e.getMessage());
+        } else {
+            // Jika username tidak ditemukan
+            GlassPanePopup.showPopup(new pesan_usernatidakditemukan());
         }
+
+        // Tutup koneksi
+        resultSet.close();
+        pstmt.close();
+        com.close();
+
+    } catch (ClassNotFoundException | SQLException e) {
+        // Tampilkan pesan error jika terjadi masalah dengan koneksi atau query
+        System.out.println("Error: " + e.getMessage());
+    }
+
+    // Reset input field setelah login
+    jeneng.setText("");
+    pw.setText("");
 
     }//GEN-LAST:event_loginActionPerformed
 

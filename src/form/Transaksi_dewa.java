@@ -264,14 +264,6 @@ private void hitungKembalian() {
         e.printStackTrace();
     }
 }
-
-
-
-
-
-
-    
-
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2=(Graphics2D)g.create();
@@ -285,8 +277,6 @@ private void hitungKembalian() {
     private void initComponents() {
 
         panelRound1 = new komponen.PanelRound();
-        panelRound3 = new komponen.PanelRound();
-        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         satuan = new javax.swing.JTextField();
         jenis = new javax.swing.JComboBox<>();
@@ -305,6 +295,7 @@ private void hitungKembalian() {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         Jumlah = new javax.swing.JSpinner();
+        stock1 = new form.stock();
 
         setBackground(new java.awt.Color(228, 228, 228));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -316,40 +307,12 @@ private void hitungKembalian() {
         panelRound1.setRoundTopRight(16);
         panelRound1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        panelRound3.setBackground(new java.awt.Color(244, 244, 246));
-        panelRound3.setRoundBottomLeft(15);
-        panelRound3.setRoundBottomRight(15);
-        panelRound3.setRoundTopLeft(15);
-        panelRound3.setRoundTopRight(15);
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel1.setText("Stock Tiket");
-
-        javax.swing.GroupLayout panelRound3Layout = new javax.swing.GroupLayout(panelRound3);
-        panelRound3.setLayout(panelRound3Layout);
-        panelRound3Layout.setHorizontalGroup(
-            panelRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelRound3Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jLabel1)
-                .addContainerGap(103, Short.MAX_VALUE))
-        );
-        panelRound3Layout.setVerticalGroup(
-            panelRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelRound3Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jLabel1)
-                .addContainerGap(200, Short.MAX_VALUE))
-        );
-
-        panelRound1.add(panelRound3, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 60, 180, 230));
-
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setText("TRANSAKSI PEMBELIAN");
         panelRound1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, -1, -1));
 
         satuan.setEditable(false);
-        panelRound1.add(satuan, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 130, 200, -1));
+        panelRound1.add(satuan, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 130, 170, -1));
 
         jenis.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Silver", "Gold" }));
         jenis.addActionListener(new java.awt.event.ActionListener() {
@@ -394,7 +357,7 @@ private void hitungKembalian() {
         panelRound1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, -1, -1));
 
         jLabel6.setText("Satuan Harga");
-        panelRound1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 110, -1, -1));
+        panelRound1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 110, -1, -1));
 
         jLabel7.setText("Kembali");
         panelRound1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 160, -1, -1));
@@ -420,6 +383,7 @@ private void hitungKembalian() {
         jLabel10.setText("Jumlah Tiket");
         panelRound1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 110, -1, -1));
         panelRound1.add(Jumlah, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 130, 70, -1));
+        panelRound1.add(stock1, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 30, -1, -1));
 
         add(panelRound1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 750, 440));
     }// </editor-fold>//GEN-END:initComponents
@@ -451,7 +415,6 @@ private void hitungKembalian() {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSpinner Jumlah;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -465,9 +428,9 @@ private void hitungKembalian() {
     private javax.swing.JTextField kembalian;
     private javax.swing.JTextField nama;
     private komponen.PanelRound panelRound1;
-    private komponen.PanelRound panelRound3;
     private komponen.Button pesan;
     private javax.swing.JTextField satuan;
+    private form.stock stock1;
     private javax.swing.JTextField tanggal;
     private javax.swing.JTextField total;
     private javax.swing.JTextField tunai;

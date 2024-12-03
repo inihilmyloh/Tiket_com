@@ -4,6 +4,8 @@
  */
 package com.loket.form;
 
+import com.loket.main.Main;
+import com.loket.main.Main.Refreshable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -15,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author KSM
  */
-public class CRUD_ADE extends javax.swing.JPanel {
+public class CRUD_ADE extends javax.swing.JPanel implements Main.Refreshable {
 
     public Statement st;
     public ResultSet rs;
@@ -26,8 +28,22 @@ public class CRUD_ADE extends javax.swing.JPanel {
      */
     public CRUD_ADE() {
         initComponents();
-
         TampilData();
+    }
+
+    public interface Refreshable {
+
+        void refresh();
+    }
+
+    @Override
+    public void refresh() {
+        TampilData(); // Panggil metode untuk menampilkan data terbaru
+    }
+
+    private void loadData() {
+        // Logika untuk memuat data dari database
+        System.out.println("Data CRUD_ADE diperbarui.");
     }
 
     private void Bersih() {

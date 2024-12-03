@@ -1,6 +1,7 @@
 package com.loket.main;
 
 import Awalan.main;
+import com.formdev.flatlaf.*;
 import com.loket.event.EventMenuPilihan;
 import com.loket.form.CRUD_ADE;
 import com.loket.form.Transaksi_dewa;
@@ -10,6 +11,11 @@ import com.loket.swing.ScrollBar;
 import java.awt.Color;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import java.awt.Font;
+import javax.swing.UIManager;
 
 public class Main extends javax.swing.JFrame {
 
@@ -19,6 +25,7 @@ public class Main extends javax.swing.JFrame {
     private form_test2 form3;
 
     public Main() {
+        tema();
         initComponents();
         setBackground(new Color(0, 0, 0, 0));
         home = new f_Home();
@@ -42,15 +49,30 @@ public class Main extends javax.swing.JFrame {
                 }
             }
         });
-
         setForm(new f_Home());
+    }
+
+    public void tema() {
+        System.out.println("Tema diterapkan");
+        FlatRobotoFont.install();
+        FlatLaf.registerCustomDefaultsSource("crazypanel");
+        UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 13));
+        FlatMacLightLaf.setup();
     }
 
     private void setForm(JComponent com) {
         mainPanel.removeAll();
         mainPanel.add(com);
+        if (com instanceof Refreshable) {
+            ((Refreshable) com).refresh(); // Memanggil refresh untuk memperbarui data
+        }
         mainPanel.repaint();
         mainPanel.revalidate();
+    }
+
+    public interface Refreshable {
+
+        void refresh(); // Metode untuk merefresh data
     }
 
     private void logoutAction() {
@@ -128,11 +150,6 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -149,9 +166,6 @@ public class Main extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Main().setVisible(true);
