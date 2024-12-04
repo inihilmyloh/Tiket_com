@@ -5,7 +5,6 @@
 package com.loket.form;
 
 import com.loket.main.Main;
-import com.loket.main.Main.Refreshable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -21,13 +20,14 @@ public class CRUD_ADE extends javax.swing.JPanel implements Main.Refreshable {
 
     public Statement st;
     public ResultSet rs;
-    Connection cn = com.loket.database.KoneksiDatabase.BukaKoneksi();
+    Connection cn = com.loket.database.Database.getConnection();
 
     /**
      * Creates new form tiket
      */
     public CRUD_ADE() {
         initComponents();
+        loadData();
         TampilData();
     }
 
@@ -147,7 +147,7 @@ public class CRUD_ADE extends javax.swing.JPanel implements Main.Refreshable {
         jScrollPane2 = new javax.swing.JScrollPane();
         tblData = new javax.swing.JTable();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        setBackground(new java.awt.Color(230, 240, 250));
 
         btnHapus.setText("Hapus");
         btnHapus.addActionListener(new java.awt.event.ActionListener() {

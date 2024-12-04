@@ -4,55 +4,62 @@
  */
 package com.loket.form;
 
-import form.*;
-import database.Database;
-import com.formdev.flatlaf.FlatLaf;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.geom.RoundRectangle2D;
+
 import com.formdev.flatlaf.FlatLaf;
-import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
-import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import com.formdev.flatlaf.themes.FlatMacLightLaf;
-import com.loket.main.Main;
-import java.awt.EventQueue;
-import java.awt.Font;
+
+import com.loket.main.Main.Refreshable;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import javax.swing.JProgressBar;
-import javax.swing.UIManager;
+
 import java.sql.*;
-import java.util.*;
-import java.text.*;
+
 import database.Database;
-import java.time.LocalDate;
 import javax.swing.SpinnerNumberModel;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import javax.swing.JFrame;
 
-public class Transaksi_dewa extends javax.swing.JPanel implements Main.Refreshable {
+import komponen.nota;
+
+public class Transaksi_dewa extends javax.swing.JPanel implements Refreshable {
 
     public Transaksi_dewa() {
         initComponents();
         FlatLaf.registerCustomDefaultsSource("crazypanel");
         addListeners();
         hitungsatuan();
+        setTanggalOtomatis();
+        // Ambil data tiket dari database untuk menampilkan jenis tiket dan harga secara dinamis
+        loadTiketData();
+
+        // Listener untuk menyesuaikan harga saat jenis tiket dipilih
+        jenis.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (jenis.getSelectedItem() != null) { // Pastikan tidak null
+                    updateHarga();
+                    hitungsatuan();
+                }
+            }
+        });
+
         tunai.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 hitungKembalian(); // Hitung kembalian setiap kali tunai diubah
             }
         });
-        tanggal.setText("");
         Jumlah.setValue(0);
         satuan.setVisible(true);
 
         hitungKembalian(); // Hitung kembalian otomatis saat aplikasi pertama kali dijalankan
-        setSpinnerStock();
+
         pesan.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Ambil data dari field input
@@ -60,32 +67,116 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Main.Refreshab
                 String Total = total.getText();
                 String Tanggal = tanggal.getText();
                 String Tunai = tunai.getText();
-                String Kembalian = kembalian.getText();
+                String JenisTiket = jenis.getSelectedItem().toString();
+                int JumlahTiket = (int) Jumlah.getValue();
 
-                // Simpan transaksi
-                simpanTransaksi(Nama, Total, Tanggal, Tunai, Kembalian);
+                simpanTransaksi(Nama, Total, Tanggal, Tunai, JenisTiket, JumlahTiket);
             }
         });
-        setTanggalOtomatis();
 
     }
 
     @Override
     public void refresh() {
-        stock1.updateStock(); // Muat ulang data saat diminta refresh
+        // Muat ulang data dari database
+        loadTiketData();
+        stock1.updateStock();
+        hitungsatuan();
+    }
+
+    private void loadTiketData() {
+        String url = "jdbc:mysql://localhost:3306/loket_tiket";
+        String suser = "root";
+        String spass = "";
+
+        try (Connection com = DriverManager.getConnection(url, suser, spass)) {
+            String query = "SELECT * FROM tiket";
+            PreparedStatement pstmt = com.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
+
+            // Kosongkan combo box jenis tiket
+            jenis.removeAllItems();
+
+            boolean dataDitemukan = false; // Tambahkan flag untuk data
+
+            while (rs.next()) {
+                dataDitemukan = true;
+                String jenisTiket = rs.getString("jenis_tiket");
+                jenis.addItem(jenisTiket); // Tambahkan jenis tiket ke combo box
+            }
+
+            if (!dataDitemukan) {
+                System.out.println("Data tiket tidak ditemukan.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Gagal memuat data tiket: " + e.getMessage());
+        }
+    }
+
+    private void updateHarga() {
+        String url = "jdbc:mysql://localhost:3306/loket_tiket";
+        String suser = "root";
+        String spass = "";
+
+        String JenisTiket = jenis.getSelectedItem().toString();
+
+        try (Connection com = DriverManager.getConnection(url, suser, spass)) {
+            String query = "SELECT harga FROM tiket WHERE jenis_tiket = ?";
+            PreparedStatement pstmt = com.prepareStatement(query);
+            pstmt.setString(1, JenisTiket);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                int harga = rs.getInt("harga");
+                satuan.setText(String.valueOf(harga)); // Tampilkan harga di field "satuan"
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Gagal memperbarui harga: " + e.getMessage());
+        }
     }
 
     private void setTanggalOtomatis() {
-        LocalDate today = LocalDate.now(); // Ambil tanggal hari ini
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Format tanggal
-        tanggal.setText(today.format(formatter)); // Set teks tanggal ke input field
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = today.format(formatter);
+        System.out.println("Tanggal hari ini: " + formattedDate);
+        tanggal.setText(formattedDate);
+        tanggal.revalidate();
+        tanggal.repaint();
+
     }
 
     private void hitungsatuan() {
-        if (jenis.getSelectedItem().toString().equalsIgnoreCase("Silver")) {
-            satuan.setText("50000");
-        } else if (jenis.getSelectedItem().toString().equalsIgnoreCase("Gold")) {
-            satuan.setText("100000");
+        if (jenis.getSelectedItem() != null) { // Pastikan tidak null
+            String selectedItem = jenis.getSelectedItem().toString(); // Item yang dipilih di ComboBox
+
+            String url = "jdbc:mysql://localhost:3306/loket_tiket"; // Sesuaikan nama database
+            String suser = "root"; // Username database
+            String spass = ""; // Password database
+
+            try (Connection com = DriverManager.getConnection(url, suser, spass)) {
+                // Query untuk mendapatkan harga berdasarkan jenis tiket
+                String query = "SELECT harga FROM tiket WHERE jenis_tiket = ?";
+                PreparedStatement pstmt = com.prepareStatement(query);
+                pstmt.setString(1, selectedItem); // Set parameter jenis tiket
+                ResultSet rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    int harga = rs.getInt("harga"); // Ambil harga dari hasil query
+                    satuan.setText(String.valueOf(harga)); // Set harga ke field "satuan"
+                } else {
+                    satuan.setText("0"); // Default jika tidak ada data
+                    System.out.println("Data harga tidak ditemukan untuk jenis tiket: " + selectedItem);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("Gagal mengambil data harga: " + e.getMessage());
+            }
+        } else {
+            satuan.setText("0"); // Default jika tidak ada item dipilih
         }
     }
 
@@ -141,11 +232,35 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Main.Refreshab
     public void hitungTotal() {
         try {
             if (jenis.getSelectedItem() != null) { // Validasi JComboBox
-                int hargaSatuan = jenis.getSelectedItem().toString().equalsIgnoreCase("Silver") ? 50000 : 100000;
+                String selectedItem = jenis.getSelectedItem().toString(); // Ambil jenis tiket yang dipilih
                 int jumlahBarang = (int) Jumlah.getValue(); // Ambil nilai dari spinner
 
+                // Ambil harga satuan dari database
+                String url = "jdbc:mysql://localhost:3306/loket_tiket"; // Nama database
+                String user = "root"; // Username database
+                String password = ""; // Password database
+
+                int hargaSatuan = 0;
+
+                try (Connection conn = DriverManager.getConnection(url, user, password)) {
+                    String query = "SELECT harga FROM tiket WHERE jenis_tiket = ?";
+                    PreparedStatement pstmt = conn.prepareStatement(query);
+                    pstmt.setString(1, selectedItem); // Set parameter jenis tiket
+                    ResultSet rs = pstmt.executeQuery();
+
+                    if (rs.next()) {
+                        hargaSatuan = rs.getInt("harga"); // Ambil harga dari hasil query
+                    } else {
+                        System.out.println("Data harga tidak ditemukan untuk jenis tiket: " + selectedItem);
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    System.out.println("Gagal mengambil data harga: " + e.getMessage());
+                }
+
+                // Hitung total biaya
                 int totalBiaya = jumlahBarang * hargaSatuan;
-                total.setText(String.valueOf(totalBiaya)); // Set total harga
+                total.setText(String.valueOf(totalBiaya)); // Set total harga ke field "total"
             } else {
                 total.setText("0"); // Default jika tidak ada item dipilih
             }
@@ -155,33 +270,47 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Main.Refreshab
         }
     }
 
-    public String generateIdTransaksi(String jenisTiket) {
+    public String generateIdTransaksi(String jenisTiket, String tanggal) {
         String idTransaksi = "";
-        try {
-            // Koneksi database
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/loket_tiket", "root", "");
+        String url = "jdbc:mysql://localhost:3306/loket_tiket";
+        String user = "root";
+        String password = "";
 
-            // Ambil nilai auto-increment terakhir dari database
-            String query = "SELECT COUNT(*) FROM transaksi";
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-            int count = 0;
+        try (Connection conn = DriverManager.getConnection(url, user, password)) {
+            // Tentukan angka pertama berdasarkan jenis tiket
+            String angkaPertama = "";
+            if ("silver".equalsIgnoreCase(jenisTiket)) {
+                angkaPertama = "1"; // Silver
+            } else if ("gold".equalsIgnoreCase(jenisTiket)) {
+                angkaPertama = "2"; // Gold
+            } else {
+                angkaPertama = "3"; // Selain Silver dan Gold
+            }
+
+            // Ambil ID transaksi terakhir untuk jenis tiket dan tanggal tertentu
+            String query = "SELECT id_transaksi FROM transaksi WHERE id_transaksi LIKE ? ORDER BY id_transaksi DESC LIMIT 1";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, angkaPertama + "%" + tanggal); // Format pencarian: <JenisTiket>%<Tanggal>
+
+            ResultSet rs = stmt.executeQuery();
+            int autoIncrement = 1; // Default jika tidak ada data sebelumnya
+
             if (rs.next()) {
-                count = rs.getInt(1) + 1; // Nilai auto-increment selanjutnya
+                String lastId = rs.getString("id_transaksi");
+                // Pecah ID terakhir, contoh: "10223" -> ["1", "02", "23"]
+                String autoIncrementPart = lastId.substring(1, 3); // Ambil 2 digit auto-increment
+                autoIncrement = Integer.parseInt(autoIncrementPart) + 1; // Tambahkan 1 ke nilai terakhir
             }
 
             // Format auto-increment menjadi 2 digit
-            String autoIncrement = String.format("%02d", count);
+            String autoIncrementStr = String.format("%02d", autoIncrement);
 
-            // Ambil 2 digit terakhir dari tanggal saat ini
-            LocalDate today = LocalDate.now();
-            String tanggal = String.format("%02d", today.getDayOfMonth());
-
-            // Buat ID transaksi
-            idTransaksi = jenisTiket + autoIncrement + tanggal; // Contoh: G0113
+            // Gabungkan menjadi ID transaksi
+            idTransaksi = angkaPertama + autoIncrementStr + tanggal;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return idTransaksi;
     }
 
@@ -189,82 +318,128 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Main.Refreshab
         try {
             if (tunai.getText().isEmpty() || total.getText().isEmpty()) {
                 kembalian.setText("0");
-                return; // Jika kosong, langsung keluar
+                return;
             }
 
             int tunaiPembeli = Integer.parseInt(tunai.getText());
             int totalBiaya = Integer.parseInt(total.getText());
 
-            // Validasi jika tunai kurang dari total
+            // Debug output
+            System.out.println("Tunai Pembeli: " + tunaiPembeli);
+            System.out.println("Total Biaya: " + totalBiaya);
+
             if (tunaiPembeli < totalBiaya) {
                 kembalian.setText("0");
             } else {
                 int kembalianPembeli = tunaiPembeli - totalBiaya;
                 kembalian.setText(String.valueOf(kembalianPembeli));
+
+                // Debug output
+                System.out.println("Kembalian: " + kembalianPembeli);
             }
         } catch (NumberFormatException e) {
-            kembalian.setText("0"); // Error format input
+
         }
     }
 
-    public void simpanTransaksi(String Nama, String Total, String Tanggal, String Tunai, String Kembalian) {
-        if (Nama.isEmpty() || Total.isEmpty() || Tanggal.isEmpty() || Tunai.isEmpty()) {
-            System.out.println("Semua field harus diisi.");
-            return;
+    private boolean simpanTransaksi(String Nama, String Total, String Tanggal, String Tunai, String JenisTiket, int JumlahTiket) {
+        boolean berhasil = false;
+        if (Nama.isEmpty() || Total.isEmpty() || Tanggal.isEmpty() || Tunai.isEmpty() || JenisTiket.isEmpty() || JumlahTiket <= 0) {
+            System.out.println("Semua field harus diisi dengan benar.");
+            return false;
         }
-
-        try (Connection com = Database.getConnection()) {
-            // Ubah jenis tiket menjadi angka 1 untuk Silver dan 2 untuk Gold
-            String jenisTiket = jenis.getSelectedItem().toString();
-            String kodeTiket = jenisTiket.equalsIgnoreCase("Silver") ? "1" : "2";
-
-            // Ambil nomor transaksi terakhir
-            String lastIdQuery = "SELECT id_transaksi FROM transaksi WHERE id_transaksi LIKE ? ORDER BY id_transaksi DESC LIMIT 1";
-            PreparedStatement lastIdPs = com.prepareStatement(lastIdQuery);
-            lastIdPs.setString(1, kodeTiket + "%");
-            ResultSet rs = lastIdPs.executeQuery();
-
-            int nextNumber = 1;
-            if (rs.next()) {
-                String lastId = rs.getString("id_transaksi");
-                int lastNumber = Integer.parseInt(lastId.substring(1, 3)); // Ambil angka autoincrement
-                nextNumber = lastNumber + 1;
-            }
-
-            String formattedIncrement = String.format("%02d", nextNumber);
-            String day = Tanggal.substring(8, 10); // Ambil tanggal (2 digit terakhir dari tanggal)
-            String idTransaksi = kodeTiket + formattedIncrement + day;
-
-            com.setAutoCommit(false);
-
-            // Simpan transaksi
-            String insertQuery = "INSERT INTO transaksi (id_transaksi, nama_pelanggan, total_harga, tanggal, uang_kembali, uang_masuk) VALUES (?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement ps = com.prepareStatement(insertQuery)) {
-                ps.setString(1, idTransaksi);
-                ps.setString(2, Nama);
-                ps.setString(3, Total);
-                ps.setString(4, Tanggal);
-                ps.setString(5, Kembalian);
-                ps.setString(6, Tunai);
-                ps.executeUpdate();
-            }
-
-            // Update stok
-            int jumlahTiket = (int) Jumlah.getValue();
-            String updateStockQuery = "UPDATE tiket SET stock = stock - ? WHERE jenis_tiket = ?";
-            try (PreparedStatement updatePs = com.prepareStatement(updateStockQuery)) {
-                updatePs.setInt(1, jumlahTiket);
-                updatePs.setString(2, jenisTiket);
-                updatePs.executeUpdate();
-            }
-
-            com.commit();
-            System.out.println("Transaksi berhasil dengan ID: " + idTransaksi);
-            setSpinnerStock();
-            stock1.updateStock();
-        } catch (SQLException e) {
+        try {
+            // Simpan transaksi ke database
+            // (sesuaikan dengan implementasi penyimpanan Anda)
+            berhasil = true; // Ubah ini berdasarkan logika simpan Anda
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if (berhasil) {
+            tampilkanNota(Nama, Total, Tanggal, Tunai, JenisTiket, JenisTiket);
+        }
+
+        String url = "jdbc:mysql://localhost:3306/loket_tiket";
+        String suser = "root";
+        String spass = "";
+
+        try (Connection com = DriverManager.getConnection(url, suser, spass)) {
+            // Cek keberadaan jenis tiket dan ambil harga serta stok
+            String hargaQuery = "SELECT harga, stock FROM tiket WHERE jenis_tiket = ?";
+            PreparedStatement hargaStmt = com.prepareStatement(hargaQuery);
+            hargaStmt.setString(1, JenisTiket);
+            ResultSet hargaRs = hargaStmt.executeQuery();
+
+            if (!hargaRs.next()) {
+                System.out.println("Jenis tiket tidak ditemukan di tabel tiket.");
+                return false;
+            }
+
+            int harga = hargaRs.getInt("harga");
+            int stok = hargaRs.getInt("stock");
+
+            if (JumlahTiket > stok) {
+                System.out.println("Stok tiket tidak mencukupi.");
+                return false;
+            }
+
+            int totalHarga = harga * JumlahTiket;
+            int tunaiPembeli = Integer.parseInt(Tunai);
+
+            if (tunaiPembeli < totalHarga) {
+                System.out.println("Tunai yang dimasukkan tidak cukup.");
+                return false;
+            }
+
+            int kembalian = tunaiPembeli - totalHarga;
+
+            // Generate ID transaksi
+            String idTransaksi = generateIdTransaksi(JenisTiket, Tanggal.substring(8, 10)); // Ambil 2 digit terakhir tanggal
+
+            // Masukkan data transaksi ke tabel transaksi
+            String transaksiQuery = "INSERT INTO transaksi (id_transaksi, nama_pelanggan, total_harga, tanggal, uang_masuk, uang_kembali) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement transaksiStmt = com.prepareStatement(transaksiQuery);
+            transaksiStmt.setString(1, idTransaksi); // Masukkan ID transaksi manual
+            transaksiStmt.setString(2, Nama);
+            transaksiStmt.setInt(3, totalHarga);
+            transaksiStmt.setString(4, Tanggal);
+            transaksiStmt.setInt(5, tunaiPembeli);
+            transaksiStmt.setInt(6, kembalian);
+            transaksiStmt.executeUpdate();
+
+            // Perbarui stok tiket
+            String updateStokQuery = "UPDATE tiket SET stock = stock - ? WHERE jenis_tiket = ?";
+            PreparedStatement updateStokStmt = com.prepareStatement(updateStokQuery);
+            updateStokStmt.setInt(1, JumlahTiket);
+            updateStokStmt.setString(2, JenisTiket);
+            updateStokStmt.executeUpdate();
+
+            System.out.println("Transaksi berhasil disimpan dengan ID: " + idTransaksi);
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Gagal menyimpan transaksi: " + e.getMessage());
+            return false;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            System.out.println("Format angka tidak valid: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private void tampilkanNota(String Nama, String Total, String Tanggal, String Tunai, String JenisTiket, String JumlahTiket) {
+        // Buat panel nota baru
+        nota notaPanel = new nota();
+        notaPanel.setNotaData(Nama, Tanggal, JenisTiket, JumlahTiket, Tanggal, Total, Tunai, Tunai);
+
+        // Tampilkan di JFrame baru
+        JFrame frame = new JFrame("Nota");
+        frame.setContentPane(notaPanel);
+        frame.pack();
+        frame.setVisible(true);
+
     }
 
     @Override
@@ -301,12 +476,10 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Main.Refreshab
         jLabel11 = new javax.swing.JLabel();
         stock1 = new com.loket.komponen.stock();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        setBackground(new java.awt.Color(230, 240, 250));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        panelRound1.setBackground(new java.awt.Color(255, 255, 255));
-        panelRound1.setMinimumSize(new java.awt.Dimension(915, 574));
-        panelRound1.setPreferredSize(new java.awt.Dimension(915, 574));
+        panelRound1.setBackground(new java.awt.Color(230, 240, 250));
         panelRound1.setRoundBottomLeft(16);
         panelRound1.setRoundBottomRight(16);
         panelRound1.setRoundTopLeft(16);
@@ -315,25 +488,25 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Main.Refreshab
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setText("Stock Tiket");
-        panelRound1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 100, -1, -1));
+        panelRound1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 50, -1, -1));
 
         satuan.setEditable(false);
-        panelRound1.add(satuan, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 140, 190, 40));
+        panelRound1.add(satuan, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 150, 210, 40));
 
-        jenis.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Silver", "Gold" }));
         jenis.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jenisActionPerformed(evt);
             }
         });
-        panelRound1.add(jenis, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, -1, -1));
+        panelRound1.add(jenis, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, 80, 30));
 
+        tanggal.setEditable(false);
         tanggal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tanggalActionPerformed(evt);
             }
         });
-        panelRound1.add(tanggal, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 360, 130, 30));
+        panelRound1.add(tanggal, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 330, 210, 40));
 
         nama.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -351,10 +524,10 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Main.Refreshab
                 pesanActionPerformed(evt);
             }
         });
-        panelRound1.add(pesan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 440, 250, 60));
+        panelRound1.add(pesan, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 380, 290, 50));
 
         jLabel3.setText("Tanggal Pembelian");
-        panelRound1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 340, -1, -1));
+        panelRound1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 310, -1, -1));
 
         jLabel4.setText("Nama pembeli");
         panelRound1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, -1, -1));
@@ -363,10 +536,10 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Main.Refreshab
         panelRound1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 130, -1, -1));
 
         jLabel6.setText("Satuan Harga");
-        panelRound1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 120, -1, -1));
+        panelRound1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 130, -1, -1));
 
         jLabel7.setText("Kembali");
-        panelRound1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 180, -1, -1));
+        panelRound1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 190, -1, -1));
 
         total.setEditable(false);
         total.addActionListener(new java.awt.event.ActionListener() {
@@ -374,28 +547,28 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Main.Refreshab
                 totalActionPerformed(evt);
             }
         });
-        panelRound1.add(total, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 280, 220, 40));
+        panelRound1.add(total, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 270, 250, 40));
 
         kembalian.setEditable(false);
-        panelRound1.add(kembalian, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 200, 190, 40));
+        panelRound1.add(kembalian, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 210, 200, 40));
 
         jLabel8.setText("Total Harga");
-        panelRound1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 260, -1, -1));
-        panelRound1.add(tunai, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, 180, 40));
+        panelRound1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 250, -1, -1));
+        panelRound1.add(tunai, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, 190, 40));
 
         jLabel9.setText("Tunai");
-        panelRound1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, -1, -1));
+        panelRound1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 190, -1, -1));
 
         jLabel10.setText("Jumlah Tiket");
-        panelRound1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 130, -1, -1));
-        panelRound1.add(Jumlah, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 150, 70, -1));
+        panelRound1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 130, -1, -1));
+        panelRound1.add(Jumlah, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 150, 80, 30));
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel11.setText("TRANSAKSI PEMBELIAN");
         panelRound1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, -1, -1));
-        panelRound1.add(stock1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 120, 410, 240));
+        panelRound1.add(stock1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 90, 410, -1));
 
-        add(panelRound1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 910, 580));
+        add(panelRound1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 910, 570));
     }// </editor-fold>//GEN-END:initComponents
 
     private void namaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_namaActionPerformed
@@ -407,11 +580,8 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Main.Refreshab
     }//GEN-LAST:event_tanggalActionPerformed
 
     private void jenisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jenisActionPerformed
-        if (jenis.getSelectedItem().toString().equalsIgnoreCase("Silver")) {
-            satuan.setText("50000");
-        } else if (jenis.getSelectedItem().toString().equalsIgnoreCase("Gold")) {
-            satuan.setText("100000");
-        }
+
+
     }//GEN-LAST:event_jenisActionPerformed
 
     private void totalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_totalActionPerformed
@@ -419,6 +589,7 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Main.Refreshab
     }//GEN-LAST:event_totalActionPerformed
 
     private void pesanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pesanActionPerformed
+
 
     }//GEN-LAST:event_pesanActionPerformed
 

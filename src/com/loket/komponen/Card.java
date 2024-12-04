@@ -6,7 +6,6 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import javax.swing.JLabel;
 
 public class Card extends javax.swing.JPanel {
 
@@ -40,7 +39,8 @@ public class Card extends javax.swing.JPanel {
         lbIcon.setIcon(data.getIcon());
         lbTitle.setText(data.getTitle());
         lbValues.setText(data.getValues());
-        lbDeskripsi.setText(data.getDeskripsi());
+        lbDeskripsi.setText("<html>" + data.getDeskripsi().replace("\n", "<br>") + "</html>");
+
     }
 
     @SuppressWarnings("unchecked")
@@ -66,7 +66,7 @@ public class Card extends javax.swing.JPanel {
 
         lbDeskripsi.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         lbDeskripsi.setForeground(new java.awt.Color(255, 255, 255));
-        lbDeskripsi.setText("Deskripsi");
+        lbDeskripsi.setText("<html>tst<br>Stst<br>tsts<br>Cihuy</html> ");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -75,11 +75,11 @@ public class Card extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbDeskripsi)
                     .addComponent(lbTitle)
                     .addComponent(lbIcon)
-                    .addComponent(lbValues))
-                .addContainerGap(295, Short.MAX_VALUE))
+                    .addComponent(lbValues)
+                    .addComponent(lbDeskripsi, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(119, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -91,8 +91,8 @@ public class Card extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbValues)
                 .addGap(18, 18, 18)
-                .addComponent(lbDeskripsi)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addComponent(lbDeskripsi, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 

@@ -24,12 +24,12 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="lbDeskripsi" min="-2" max="-2" attributes="0"/>
                   <Component id="lbTitle" min="-2" max="-2" attributes="0"/>
                   <Component id="lbIcon" min="-2" max="-2" attributes="0"/>
                   <Component id="lbValues" min="-2" max="-2" attributes="0"/>
+                  <Component id="lbDeskripsi" alignment="0" min="-2" pref="146" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="295" max="32767" attributes="0"/>
+              <EmptySpace pref="119" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -43,8 +43,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lbValues" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="lbDeskripsi" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="25" max="32767" attributes="0"/>
+              <Component id="lbDeskripsi" pref="135" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -87,7 +87,7 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Deskripsi"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;tst&lt;br&gt;Stst&lt;br&gt;tsts&lt;br&gt;Cihuy&lt;/html&gt; "/>
       </Properties>
     </Component>
   </SubComponents>

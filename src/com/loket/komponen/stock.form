@@ -3,7 +3,7 @@
 <Form version="1.9" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-      <Color blue="ff" green="ff" red="ff" type="rgb"/>
+      <Color blue="fa" green="f0" red="e6" type="rgb"/>
     </Property>
   </Properties>
   <AuxValues>
@@ -50,20 +50,20 @@
         <Component class="com.loket.komponen.Card" name="card1">
           <Properties>
             <Property name="color1" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="c7" green="c3" red="bd" type="rgb"/>
+              <Color blue="bf" green="6b" red="91" type="rgb"/>
             </Property>
             <Property name="color2" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="50" green="3e" red="2c" type="rgb"/>
+              <Color blue="9c" green="48" red="6e" type="rgb"/>
             </Property>
           </Properties>
         </Component>
         <Component class="com.loket.komponen.Card" name="card2">
           <Properties>
             <Property name="color1" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="a7" green="f9" red="f3" type="rgb"/>
+              <Color blue="71" green="b3" red="3c" type="rgb"/>
             </Property>
             <Property name="color2" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="31" green="c5" red="ca" type="rgb"/>
+              <Color blue="5c" green="80" red="20" type="rgb"/>
             </Property>
           </Properties>
         </Component>

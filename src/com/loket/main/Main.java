@@ -1,19 +1,17 @@
 package com.loket.main;
 
 import Awalan.main;
-import com.formdev.flatlaf.*;
 import com.loket.event.EventMenuPilihan;
 import com.loket.form.CRUD_ADE;
 import com.loket.form.Transaksi_dewa;
 import com.loket.form.f_Home;
-import com.loket.form.form_test2;
-import com.loket.swing.ScrollBar;
 import java.awt.Color;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import com.loket.form.laporan_diva;
 import java.awt.Font;
 import javax.swing.UIManager;
 
@@ -22,7 +20,7 @@ public class Main extends javax.swing.JFrame {
     private f_Home home;
     private CRUD_ADE form1;
     private Transaksi_dewa form2;
-    private form_test2 form3;
+    private laporan_diva form3;
 
     public Main() {
         tema();
@@ -31,7 +29,7 @@ public class Main extends javax.swing.JFrame {
         home = new f_Home();
         form1 = new CRUD_ADE();
         form2 = new Transaksi_dewa();
-        form3 = new form_test2();
+        form3 = new laporan_diva();
         menu.initMoving(Main.this);
         menu.addEventMenuPilihan(new EventMenuPilihan() {
             @Override
@@ -102,12 +100,15 @@ public class Main extends javax.swing.JFrame {
 
         pn_Border1 = new com.loket.swing.pn_Border();
         menu = new com.loket.komponen.Menu();
-        header1 = new com.loket.komponen.Header();
         mainPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(230, 240, 250));
         setUndecorated(true);
 
+        pn_Border1.setBackground(new java.awt.Color(230, 240, 250));
+
+        mainPanel.setBackground(new java.awt.Color(230, 240, 250));
         mainPanel.setLayout(new java.awt.BorderLayout());
 
         javax.swing.GroupLayout pn_Border1Layout = new javax.swing.GroupLayout(pn_Border1);
@@ -116,22 +117,14 @@ public class Main extends javax.swing.JFrame {
             pn_Border1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pn_Border1Layout.createSequentialGroup()
                 .addComponent(menu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addGroup(pn_Border1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(header1, javax.swing.GroupLayout.DEFAULT_SIZE, 963, Short.MAX_VALUE)
-                    .addGroup(pn_Border1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
+                .addContainerGap())
         );
         pn_Border1Layout.setVerticalGroup(
             pn_Border1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(menu, javax.swing.GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
-            .addGroup(pn_Border1Layout.createSequentialGroup()
-                .addComponent(header1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -174,7 +167,6 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.loket.komponen.Header header1;
     private javax.swing.JPanel mainPanel;
     private com.loket.komponen.Menu menu;
     private com.loket.swing.pn_Border pn_Border1;
