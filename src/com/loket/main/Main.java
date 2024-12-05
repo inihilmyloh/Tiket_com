@@ -62,15 +62,14 @@ public class Main extends javax.swing.JFrame {
         mainPanel.removeAll();
         mainPanel.add(com);
         if (com instanceof Refreshable) {
-            ((Refreshable) com).refresh(); // Memanggil refresh untuk memperbarui data
+            ((Refreshable) com).refresh();
         }
         mainPanel.repaint();
         mainPanel.revalidate();
     }
 
     public interface Refreshable {
-
-        void refresh(); // Metode untuk merefresh data
+        void refresh();
     }
 
     private void logoutAction() {
