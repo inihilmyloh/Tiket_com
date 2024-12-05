@@ -66,7 +66,7 @@ public class Card extends javax.swing.JPanel {
 
         lbDeskripsi.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         lbDeskripsi.setForeground(new java.awt.Color(255, 255, 255));
-        lbDeskripsi.setText("<html>tst<br>Stst<br>tsts<br>Cihuy</html> ");
+        lbDeskripsi.setText("<html>Deskripsi<br>Deskripsi<br>Deskripsi<br>Deskripsi</html> ");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -78,8 +78,8 @@ public class Card extends javax.swing.JPanel {
                     .addComponent(lbTitle)
                     .addComponent(lbIcon)
                     .addComponent(lbValues)
-                    .addComponent(lbDeskripsi, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(119, Short.MAX_VALUE))
+                    .addComponent(lbDeskripsi, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -91,7 +91,7 @@ public class Card extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbValues)
                 .addGap(18, 18, 18)
-                .addComponent(lbDeskripsi, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                .addComponent(lbDeskripsi, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

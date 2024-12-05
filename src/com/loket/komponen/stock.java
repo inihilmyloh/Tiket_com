@@ -1,23 +1,19 @@
 package com.loket.komponen;
 
-import com.loket.main.Main;
-import com.loket.main.Main.Refreshable;
-import com.loket.model.m_Card;
 import com.loket.service.DataFetcher;
-import javax.swing.ImageIcon;
 
 public class stock extends javax.swing.JPanel {
 
     public stock() {
         initComponents();
-        card1.setData(DataFetcher.getCardData("silver", "/com/loket/icon/tiket1.png", "Stock Silver"));
-        card2.setData(DataFetcher.getCardData("gold", "/com/loket/icon/tiket1.png", "Stock Gold"));
+        card1.setData(DataFetcher.getStock1("/com/loket/icon/tiket1.png", "Total jenis Tiket"));
+        card2.setData(DataFetcher.getStock2("/com/loket/icon/tiket1.png", "Total Stock"));
 
     }
 
     public void updateStock() {
-        card1.setData(DataFetcher.getCardData("silver", "/com/loket/icon/tiket1.png", "Stock Silver"));
-        card2.setData(DataFetcher.getCardData("gold", "/com/loket/icon/tiket1.png", "Stock Gold"));
+        card1.setData(DataFetcher.getStock1("/com/loket/icon/tiket1.png", "Total jenis Tiket"));
+        card2.setData(DataFetcher.getStock2("/com/loket/icon/tiket1.png", "Total Stock"));
 
         // Tambahkan log jika diperlukan untuk debugging
         System.out.println("Stock updated!");

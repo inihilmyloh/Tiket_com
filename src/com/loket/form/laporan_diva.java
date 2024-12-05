@@ -8,8 +8,10 @@ import com.loket.main.Main;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
 
-public class laporan_diva extends JPanel implements Main.Refreshable{
+public class laporan_diva extends JPanel implements Main.Refreshable {
 
     public static Connection con;
     public static Statement stm;
@@ -24,10 +26,12 @@ public class laporan_diva extends JPanel implements Main.Refreshable{
         koneksimysql();
         tampiltabel();
     }
+
     public interface Refreshable {
 
         void refresh();
     }
+
     @Override
     public void refresh() {
         tampiltabel(); // Panggil metode untuk menampilkan data terbaru
@@ -78,6 +82,18 @@ public class laporan_diva extends JPanel implements Main.Refreshable{
     private void tableDiva() {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+
+        setBackground(new java.awt.Color(230, 240, 250));
+
+        jTable1.setAutoCreateRowSorter(true);
+        jTable1.setBackground(new java.awt.Color(230, 240, 250)); // Background tabel
+        jTable1.setForeground(new java.awt.Color(0, 0, 0));       // Teks tabel
+        jTable1.setGridColor(new java.awt.Color(200, 200, 200));  // Warna grid
+
+        // Header style
+        jTable1.getTableHeader().setBackground(new java.awt.Color(200, 200, 255));
+        jTable1.getTableHeader().setForeground(new java.awt.Color(50, 50, 50));
+        jTable1.getTableHeader().setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
 
         jTable1.setModel(new DefaultTableModel(
                 new Object[][]{},
@@ -144,7 +160,7 @@ public class laporan_diva extends JPanel implements Main.Refreshable{
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jTable1.setGridColor(new java.awt.Color(230, 240, 250));
+        jTable1.setGridColor(new java.awt.Color(200, 200, 200));
         jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

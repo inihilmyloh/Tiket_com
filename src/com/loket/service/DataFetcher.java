@@ -70,13 +70,13 @@ public class DataFetcher {
             }
 
             if (descBuilder.length() > 0) {
-                description = descBuilder.substring(0, descBuilder.length() - 2); // Hapus koma terakhir
+                description = descBuilder.toString().trim(); // Hilangkan whitespace atau newline tambahan
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        System.out.println("Description: " + description);
         // Kembalikan m_Card
         return new m_Card(
                 new ImageIcon(DataFetcher.class.getResource(iconPath)),
@@ -112,7 +112,114 @@ public class DataFetcher {
         );
     }
 
+    public static m_Card getStock1(String iconPath, String title) {
+        m_Card card = null; // Inisialisasi card sebagai null untuk null safety
+        String description = "";
+        int totalJenis = 0;
+
+        // Query untuk mengambil semua jenis tiket dan stoknya
+        String query = "SELECT jenis_tiket, stock FROM tiket";
+
+        try (Connection conn = Database.getConnection(); java.sql.Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+
+            StringBuilder descBuilder = new StringBuilder();
+
+            while (rs.next()) {
+                // Ambil data dari database
+                String jenis = rs.getString("jenis_tiket");
+                int stok = rs.getInt("stock");
+                descBuilder.append(jenis).append(": ").append(stok).append("\n");
+                totalJenis++;
+            }
+
+            if (descBuilder.length() > 0) {
+                description = descBuilder.toString().trim(); // Trim whitespace
+            } else {
+                // Log jika data tidak ditemukan
+                System.out.println("Data tidak ditemukan dalam tabel tiket.");
+            }
+
+            // Buat m_Card berdasarkan data
+            card = new m_Card(
+                    new ImageIcon(DataFetcher.class.getResource(iconPath)), // Ikon
+                    title, // Judul
+                    String.valueOf(totalJenis), // Total jenis tiket
+                    description // Deskripsi detail
+            );
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            // Tangani error umum lainnya
+            e.printStackTrace();
+        }
+
+        // Jika data null, kembalikan objek default (opsional untuk null safety)
+        if (card == null) {
+            card = new m_Card(
+                    new ImageIcon(DataFetcher.class.getResource(iconPath)), // Ikon default
+                    title, // Judul
+                    "0", // Total stok default
+                    "Data tidak ditemukan" // Deskripsi default
+            );
+        }
+
+        return card;
+    }
+
+    public static m_Card getStock2(String iconPath, String title) {
+        m_Card card = null; // Inisialisasi null untuk null safety
+        try (Connection connection = Database.getConnection()) {
+            // Query untuk mengambil total stok dan detail harga
+            String query = "SELECT SUM(stock) AS total_stok, GROUP_CONCAT(jenis_tiket, ': Rp ', harga SEPARATOR '\n') AS harga_detail FROM tiket";
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            // Eksekusi query
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                // Ambil data total stok dan detail harga
+                int totalStock = resultSet.getInt("total_stok");
+                String hargaDetail = resultSet.getString("harga_detail");
+
+                // Format deskripsi
+                String deskripsi = (hargaDetail != null && !hargaDetail.isEmpty()) ? hargaDetail : "Detail harga tidak tersedia";
+
+                // Konversi total stok ke string
+                String values = String.valueOf(totalStock);
+
+                // Buat objek m_Card
+                card = new m_Card(
+                        new ImageIcon(DataFetcher.class.getResource(iconPath)), // Ikon
+                        title, // Judul
+                        values, // Nilai total stok
+                        deskripsi // Deskripsi harga
+                );
+            } else {
+                // Log jika data tidak ditemukan
+                System.out.println("Data tidak ditemukan dalam tabel tiket.");
+            }
+        } catch (SQLException e) {
+            // Tangani error SQL
+            e.printStackTrace();
+        } catch (Exception e) {
+            // Tangani error umum lainnya
+            e.printStackTrace();
+        }
+
+        // Jika data null, kembalikan objek default (opsional untuk null safety)
+        if (card == null) {
+            card = new m_Card(
+                    new ImageIcon(DataFetcher.class.getResource(iconPath)), // Ikon default
+                    title, // Judul
+                    "0", // Total stok default
+                    "Data tidak ditemukan" // Deskripsi default
+            );
+        }
+
+        return card; // Kembalikan objek m_Card
+    }
     //sementara
+
     public static m_Card getCardData(String jenisTiket, String iconPath, String title) {
         m_Card card = null;
         try (Connection connection = Database.getConnection()) {

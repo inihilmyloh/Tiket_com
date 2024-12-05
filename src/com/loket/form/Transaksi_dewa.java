@@ -414,6 +414,8 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Refreshable {
             updateStokStmt.setInt(1, JumlahTiket);
             updateStokStmt.setString(2, JenisTiket);
             updateStokStmt.executeUpdate();
+            //stock update
+            stock1.updateStock();
 
             System.out.println("Transaksi berhasil disimpan dengan ID: " + idTransaksi);
             return true;
