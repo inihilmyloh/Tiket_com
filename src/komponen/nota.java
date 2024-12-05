@@ -28,16 +28,17 @@ public class nota extends javax.swing.JPanel {
     
     
     public void setNotaData(String Nama, String Tanggal, String JenisTiket, String JumlahTiket, 
-                            String HargaSatuan, String Total, String Tunai, String Kembalian) {
+                            String HargaSatuan, String Total, String Tunai, String Kembalian, String IdTransaksi) {
         // Set data ke komponen nota
      lblNama.setText(Nama);
     lblTanggal.setText(Tanggal);
     lblJenisTiket.setText(JenisTiket);
     lblJumlah.setText(String.valueOf(JumlahTiket));
-    lblHargaSatuan.setText("...");
+    lblHargaSatuan.setText(HargaSatuan);
     lblTotal.setText(Total);
     lblTunai.setText(Tunai);
-    lblKembalian.setText("...");
+    lblKembalian.setText(Kembalian);
+    id_transaksi.setText(IdTransaksi);
     }
 
 
@@ -75,6 +76,7 @@ public class nota extends javax.swing.JPanel {
         lblTotal1 = new javax.swing.JLabel();
         lblTunai1 = new javax.swing.JLabel();
         lblKembalian1 = new javax.swing.JLabel();
+        id_transaksi = new javax.swing.JLabel();
 
         jLabel2.setText("jLabel2");
 
@@ -131,7 +133,7 @@ public class nota extends javax.swing.JPanel {
         add(lblNama, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 90, -1, 20));
 
         lblNama1.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
-        lblNama1.setText("Nama                        :");
+        lblNama1.setText("Nama                     :");
         add(lblNama1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, -1, 20));
 
         lblTanggal1.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
@@ -161,10 +163,15 @@ public class nota extends javax.swing.JPanel {
         lblKembalian1.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
         lblKembalian1.setText("Kembali :");
         add(lblKembalian1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 300, -1, -1));
+
+        id_transaksi.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
+        id_transaksi.setText("TRANS");
+        add(id_transaksi, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 350, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel id_transaksi;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel13;

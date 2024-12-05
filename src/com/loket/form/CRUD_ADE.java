@@ -342,37 +342,59 @@ public class CRUD_ADE extends javax.swing.JPanel implements Main.Refreshable {
         // TODO add your handling code here:
         try {
             st = cn.createStatement();
+
+            // Validasi input
             if (txtJenis.getText().equals("")
                     || txtHarga.getText().equals("")
                     || txtStok.getText().equals("")) {
                 JOptionPane.showMessageDialog(null, "Data tidak boleh kosong", "Validasi Data", JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
-            // aksi simpan dan merubah data
-            if (btnSimpan.getText().equals("Simpan")) {
-                // Logika aksi simpan data baru
-                String sql = "INSERT INTO tiket (jenis_tiket, harga, stock) VALUES ('"
-                        + txtJenis.getText() + "', '"
-                        + txtHarga.getText() + "', '"
-                        + txtStok.getText() + "')";
-                st.executeUpdate(sql);
-                JOptionPane.showMessageDialog(null, "Data berhasil disimpan!");
-                Bersih();
-                TampilData();
+
+            // Jika ID sudah diisi, berarti mode UPDATE
+            if (!txtID.getText().equals("")) {
+                // UPDATE data berdasarkan ID
+                String sqlUpdate = "UPDATE tiket SET "
+                        + "jenis_tiket = '" + txtJenis.getText() + "', "
+                        + "harga = '" + txtHarga.getText() + "', "
+                        + "stock = " + txtStok.getText()
+                        + " WHERE id_tiket = '" + txtID.getText() + "'";
+                st.executeUpdate(sqlUpdate);
+                JOptionPane.showMessageDialog(null, "Data tiket berhasil diperbarui!");
+
             } else {
-                // Logika aksi ubah data
-                String update = "UPDATE tiket SET jenis_tiket = '" + txtJenis.getText()
-                        + "', harga = '" + txtHarga.getText()
-                        + "', stock = '" + txtStok.getText()
-                        + "' WHERE Id_tiket = '" + txtID.getText() + "'";
-                st.executeUpdate(update);
-                JOptionPane.showMessageDialog(null, "Data berhasil disimpan!");
-                Bersih();
-                TampilData();
+                // Jika ID kosong, cek apakah jenis tiket sudah ada
+                String sqlCheck = "SELECT * FROM tiket WHERE jenis_tiket = '" + txtJenis.getText() + "'";
+                rs = st.executeQuery(sqlCheck);
+
+                if (rs.next()) {
+                    // Jika jenis tiket sudah ada, tambahkan stok
+                    int stokLama = rs.getInt("stock");
+                    int stokBaru = stokLama + Integer.parseInt(txtStok.getText());
+
+                    String sqlUpdateStok = "UPDATE tiket SET stock = " + stokBaru
+                            + " WHERE jenis_tiket = '" + txtJenis.getText() + "'";
+                    st.executeUpdate(sqlUpdateStok);
+                    JOptionPane.showMessageDialog(null, "Stok tiket berhasil diperbarui!");
+
+                } else {
+                    // Jika jenis tiket belum ada, simpan data baru
+                    String sqlInsert = "INSERT INTO tiket (jenis_tiket, harga, stock) VALUES ('"
+                            + txtJenis.getText() + "', '"
+                            + txtHarga.getText() + "', '"
+                            + txtStok.getText() + "')";
+                    st.executeUpdate(sqlInsert);
+                    JOptionPane.showMessageDialog(null, "Data tiket berhasil disimpan!");
+                }
             }
 
+            // Reset form dan refresh data
+            Bersih();
+            TampilData();
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, "Terjadi kesalahan: " + e.getMessage());
+            e.printStackTrace();
         }
     }//GEN-LAST:event_btnSimpanActionPerformed
 

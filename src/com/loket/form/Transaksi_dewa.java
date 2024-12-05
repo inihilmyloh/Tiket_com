@@ -344,20 +344,10 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Refreshable {
 
     private boolean simpanTransaksi(String Nama, String Total, String Tanggal, String Tunai, String JenisTiket, int JumlahTiket) {
         boolean berhasil = false;
+
         if (Nama.isEmpty() || Total.isEmpty() || Tanggal.isEmpty() || Tunai.isEmpty() || JenisTiket.isEmpty() || JumlahTiket <= 0) {
             System.out.println("Semua field harus diisi dengan benar.");
             return false;
-        }
-        try {
-            // Simpan transaksi ke database
-            // (sesuaikan dengan implementasi penyimpanan Anda)
-            berhasil = true; // Ubah ini berdasarkan logika simpan Anda
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (berhasil) {
-            tampilkanNota(Nama, Total, Tanggal, Tunai, JenisTiket, JenisTiket);
         }
 
         String url = "jdbc:mysql://localhost:3306/loket_tiket";
@@ -414,8 +404,13 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Refreshable {
             updateStokStmt.setInt(1, JumlahTiket);
             updateStokStmt.setString(2, JenisTiket);
             updateStokStmt.executeUpdate();
-            //stock update
-            stock1.updateStock();
+
+            stock1.updateStock();//mengrefresh stock
+
+            // Tampilkan nota setelah semua perhitungan selesai
+            tampilkanNota(Nama, Tanggal, JenisTiket, String.valueOf(JumlahTiket),
+                    String.valueOf(harga), String.valueOf(totalHarga),
+                    Tunai, String.valueOf(kembalian), String.valueOf(idTransaksi));
 
             System.out.println("Transaksi berhasil disimpan dengan ID: " + idTransaksi);
             return true;
@@ -431,10 +426,11 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Refreshable {
         }
     }
 
-    private void tampilkanNota(String Nama, String Total, String Tanggal, String Tunai, String JenisTiket, String JumlahTiket) {
+    private void tampilkanNota(String Nama, String Tanggal, String JenisTiket, String JumlahTiket,
+            String HargaSatuan, String Total, String Tunai, String Kembalian, String IdTransaksi) {
         // Buat panel nota baru
         nota notaPanel = new nota();
-        notaPanel.setNotaData(Nama, Tanggal, JenisTiket, JumlahTiket, Tanggal, Total, Tunai, Tunai);
+        notaPanel.setNotaData(Nama, Tanggal, JenisTiket, JumlahTiket, HargaSatuan, Total, Tunai, Kembalian, IdTransaksi);
 
         // Tampilkan di JFrame baru
         JFrame frame = new JFrame("Nota");

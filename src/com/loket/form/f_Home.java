@@ -19,12 +19,9 @@ public class f_Home extends javax.swing.JPanel implements Main.Refreshable {
     }
 
     private void loadDataFromDatabase() {
-        // Logika memuat data dari sumber
-
         card1.setData(DataFetcher.getJenisTiket("/com/loket/icon/tiket1.png", "Jumlah Jenis Tiket"));
         card2.setData(DataFetcher.getTotalStockAndPrices("/com/loket/icon/tiket1.png", "Total Stock Dan Harga Setiap Tiket"));
         card3.setData(DataFetcher.getPendapatan("/com/loket/icon/profit.png", "Total Pendapatan"));
-
     }
 
     @SuppressWarnings("unchecked")
