@@ -344,7 +344,6 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Refreshable {
 
     private boolean simpanTransaksi(String Nama, String Total, String Tanggal, String Tunai, String JenisTiket, int JumlahTiket) {
         boolean berhasil = false;
-
         if (Nama.isEmpty() || Total.isEmpty() || Tanggal.isEmpty() || Tunai.isEmpty() || JenisTiket.isEmpty() || JumlahTiket <= 0) {
             System.out.println("Semua field harus diisi dengan benar.");
             return false;
@@ -355,19 +354,20 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Refreshable {
         String spass = "";
 
         try (Connection com = DriverManager.getConnection(url, suser, spass)) {
-            // Cek keberadaan jenis tiket dan ambil harga serta stok
-            String hargaQuery = "SELECT harga, stock FROM tiket WHERE jenis_tiket = ?";
-            PreparedStatement hargaStmt = com.prepareStatement(hargaQuery);
-            hargaStmt.setString(1, JenisTiket);
-            ResultSet hargaRs = hargaStmt.executeQuery();
+            // Ambil data `id_tiket`, `harga`, dan `stok` berdasarkan `jenis_tiket`
+            String tiketQuery = "SELECT id_tiket, harga, stock FROM tiket WHERE jenis_tiket = ?";
+            PreparedStatement tiketStmt = com.prepareStatement(tiketQuery);
+            tiketStmt.setString(1, JenisTiket);
+            ResultSet tiketRs = tiketStmt.executeQuery();
 
-            if (!hargaRs.next()) {
+            if (!tiketRs.next()) {
                 System.out.println("Jenis tiket tidak ditemukan di tabel tiket.");
                 return false;
             }
 
-            int harga = hargaRs.getInt("harga");
-            int stok = hargaRs.getInt("stock");
+            String idTiket = tiketRs.getString("id_tiket");
+            int harga = tiketRs.getInt("harga");
+            int stok = tiketRs.getInt("stock");
 
             if (JumlahTiket > stok) {
                 System.out.println("Stok tiket tidak mencukupi.");
@@ -388,42 +388,42 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Refreshable {
             String idTransaksi = generateIdTransaksi(JenisTiket, Tanggal.substring(8, 10)); // Ambil 2 digit terakhir tanggal
 
             // Masukkan data transaksi ke tabel transaksi
-            String transaksiQuery = "INSERT INTO transaksi (id_transaksi, nama_pelanggan, total_harga, tanggal, uang_masuk, uang_kembali) VALUES (?, ?, ?, ?, ?, ?)";
+            String transaksiQuery = "INSERT INTO transaksi (id_transaksi, id_tiket, nama_pelanggan, total_harga, tanggal, uang_masuk, uang_kembali) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement transaksiStmt = com.prepareStatement(transaksiQuery);
-            transaksiStmt.setString(1, idTransaksi); // Masukkan ID transaksi manual
-            transaksiStmt.setString(2, Nama);
-            transaksiStmt.setInt(3, totalHarga);
-            transaksiStmt.setString(4, Tanggal);
-            transaksiStmt.setInt(5, tunaiPembeli);
-            transaksiStmt.setInt(6, kembalian);
+            transaksiStmt.setString(1, idTransaksi); // ID transaksi
+            transaksiStmt.setString(2, idTiket); // ID tiket yang didapatkan dari tabel tiket
+            transaksiStmt.setString(3, Nama);
+            transaksiStmt.setInt(4, totalHarga);
+            transaksiStmt.setString(5, Tanggal);
+            transaksiStmt.setInt(6, tunaiPembeli);
+            transaksiStmt.setInt(7, kembalian);
             transaksiStmt.executeUpdate();
 
             // Perbarui stok tiket
-            String updateStokQuery = "UPDATE tiket SET stock = stock - ? WHERE jenis_tiket = ?";
+            String updateStokQuery = "UPDATE tiket SET stock = stock - ? WHERE id_tiket = ?";
             PreparedStatement updateStokStmt = com.prepareStatement(updateStokQuery);
             updateStokStmt.setInt(1, JumlahTiket);
-            updateStokStmt.setString(2, JenisTiket);
+            updateStokStmt.setString(2, idTiket);
             updateStokStmt.executeUpdate();
 
-            stock1.updateStock();//mengrefresh stock
+            stock1.updateStock();
 
-            // Tampilkan nota setelah semua perhitungan selesai
             tampilkanNota(Nama, Tanggal, JenisTiket, String.valueOf(JumlahTiket),
                     String.valueOf(harga), String.valueOf(totalHarga),
                     Tunai, String.valueOf(kembalian), String.valueOf(idTransaksi));
 
             System.out.println("Transaksi berhasil disimpan dengan ID: " + idTransaksi);
-            return true;
+            berhasil = true;
 
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Gagal menyimpan transaksi: " + e.getMessage());
-            return false;
         } catch (NumberFormatException e) {
             e.printStackTrace();
             System.out.println("Format angka tidak valid: " + e.getMessage());
-            return false;
         }
+
+        return berhasil;
     }
 
     private void tampilkanNota(String Nama, String Tanggal, String JenisTiket, String JumlahTiket,

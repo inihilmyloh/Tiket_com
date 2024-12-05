@@ -54,6 +54,7 @@ public class laporan_diva extends JPanel implements Main.Refreshable {
         DefaultTableModel tb = new DefaultTableModel();
         tb.addColumn("ID Transaksi");
         tb.addColumn("Nama Pelanggan");
+        tb.addColumn("Jenis Tiket"); // Kolom baru untuk jenis tiket
         tb.addColumn("Total Harga");
         tb.addColumn("Tanggal");
         tb.addColumn("Uang Kembali");
@@ -61,18 +62,24 @@ public class laporan_diva extends JPanel implements Main.Refreshable {
         jTable1.setModel(tb);
 
         try {
-            res = stm.executeQuery("SELECT * FROM transaksi");
+            // Perbarui query untuk join tabel transaksi dan tiket
+            String query = "SELECT transaksi.id_transaksi, transaksi.nama_pelanggan, tiket.jenis_tiket, "
+                    + "transaksi.total_harga, transaksi.tanggal, transaksi.uang_kembali, transaksi.uang_masuk "
+                    + "FROM transaksi "
+                    + "JOIN tiket ON transaksi.id_tiket = tiket.id_tiket";
+
+            res = stm.executeQuery(query);
             while (res.next()) {
                 tb.addRow(new Object[]{
-                    res.getString("Id_transaksi"),
+                    res.getString("id_transaksi"),
                     res.getString("nama_pelanggan"),
+                    res.getString("jenis_tiket"),
                     res.getString("total_harga"),
                     res.getString("tanggal"),
                     res.getString("uang_kembali"),
                     res.getString("uang_masuk")
                 });
             }
-            jTable1.repaint();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Data Gagal Ditampilkan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
