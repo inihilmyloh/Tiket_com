@@ -218,47 +218,4 @@ public class DataFetcher {
 
         return card; // Kembalikan objek m_Card
     }
-    //sementara
-
-    public static m_Card getCardData(String jenisTiket, String iconPath, String title) {
-        m_Card card = null;
-        try (Connection connection = Database.getConnection()) {
-            // Query ke tabel tiket
-            String query = "SELECT harga, stock FROM tiket WHERE jenis_tiket = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, jenisTiket);
-
-            // Eksekusi query
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                // Ambil data dari database
-                int harga = resultSet.getInt("harga");
-                int stock = resultSet.getInt("stock");
-                NumberFormat formatter = NumberFormat.getNumberInstance(new Locale("id", "ID"));
-                String formattedHarga = "Rp " + formatter.format(harga);
-                // Buat string untuk deskripsi
-                String deskripsi = "Harga: " + formattedHarga;
-                // Stock sebagai value
-                String values = String.valueOf(stock);
-                // Buat m_Card
-                card = new m_Card(new ImageIcon(DataFetcher.class.getResource(iconPath)), title, values, deskripsi);
-            } else {
-                // Tambahkan log jika tidak ada data
-                System.out.println("Data tidak ditemukan untuk jenis tiket: " + jenisTiket);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // Jika data null, kembalikan objek default (opsional)
-        if (card == null) {
-            card = new m_Card(
-                    new ImageIcon(DataFetcher.class.getResource(iconPath)),
-                    title,
-                    "0",
-                    "Data tidak ditemukan"
-            );
-        }
-        return card;
-    }
-
 }
