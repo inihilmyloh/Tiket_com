@@ -26,12 +26,13 @@ public class laporan_diva extends JPanel implements Main.Refreshable {
     }
 
     public interface Refreshable {
+
         void refresh();
     }
 
     @Override
     public void refresh() {
-        tableDiva();
+        System.out.println("Refresh laporan_diva");
         tampiltabel();
     }
 

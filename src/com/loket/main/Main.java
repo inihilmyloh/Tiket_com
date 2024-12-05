@@ -59,9 +59,11 @@ public class Main extends javax.swing.JFrame {
     }
 
     private void setForm(JComponent com) {
+        System.out.println("Form yang dipilih: " + com.getClass().getName());
         mainPanel.removeAll();
         mainPanel.add(com);
         if (com instanceof Refreshable) {
+            System.out.println("Memanggil refresh untuk " + com.getClass().getName());
             ((Refreshable) com).refresh();
         }
         mainPanel.repaint();
