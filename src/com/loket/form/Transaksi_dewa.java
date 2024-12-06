@@ -277,40 +277,45 @@ public class Transaksi_dewa extends javax.swing.JPanel implements Refreshable {
         String password = "";
 
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
-            // Tentukan angka pertama berdasarkan jenis tiket
+
+            // Ambil angka pertama berdasarkan jenis tiket dari tabel tiket
             String angkaPertama = "";
-            if ("silver".equalsIgnoreCase(jenisTiket)) {
-                angkaPertama = "1"; // Silver
-            } else if ("gold".equalsIgnoreCase(jenisTiket)) {
-                angkaPertama = "2"; // Gold
+            String queryJenisTiket = "SELECT id_tiket FROM tiket WHERE jenis_tiket = ?";
+            PreparedStatement stmtJenisTiket = conn.prepareStatement(queryJenisTiket);
+            stmtJenisTiket.setString(1, jenisTiket);
+            ResultSet rsJenisTiket = stmtJenisTiket.executeQuery();
+
+            if (rsJenisTiket.next()) {
+                // Ambil id_tiket yang terkait dengan jenis tiket
+                String idTiket = rsJenisTiket.getString("id_tiket");
+                // Ambil angka pertama dari id_tiket (misalnya karakter pertama)
+                angkaPertama = idTiket.substring(0, 1);
             } else {
-                angkaPertama = "3"; // Selain Silver dan Gold
+                // Jika jenis tiket tidak ditemukan di database, beri angka default
+                angkaPertama = "0";
             }
 
             // Ambil ID transaksi terakhir untuk jenis tiket dan tanggal tertentu
             String query = "SELECT id_transaksi FROM transaksi WHERE id_transaksi LIKE ? ORDER BY id_transaksi DESC LIMIT 1";
             PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, angkaPertama + "%" + tanggal); // Format pencarian: <JenisTiket>%<Tanggal>
+            stmt.setString(1, angkaPertama + "%" + tanggal); // Gabungkan angka pertama dan tanggal
 
             ResultSet rs = stmt.executeQuery();
-            int autoIncrement = 1; // Default jika tidak ada data sebelumnya
+            int autoIncrement = 1;
 
             if (rs.next()) {
                 String lastId = rs.getString("id_transaksi");
-                // Pecah ID terakhir, contoh: "10223" -> ["1", "02", "23"]
-                String autoIncrementPart = lastId.substring(1, 3); // Ambil 2 digit auto-increment
-                autoIncrement = Integer.parseInt(autoIncrementPart) + 1; // Tambahkan 1 ke nilai terakhir
+                String autoIncrementPart = lastId.substring(1, 3); // Ambil urutan dari ID transaksi terakhir
+                autoIncrement = Integer.parseInt(autoIncrementPart) + 1;
             }
 
-            // Format auto-increment menjadi 2 digit
             String autoIncrementStr = String.format("%02d", autoIncrement);
-
-            // Gabungkan menjadi ID transaksi
+            // Gabungkan angka pertama, urutan transaksi, dan tanggal untuk ID transaksi
             idTransaksi = angkaPertama + autoIncrementStr + tanggal;
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return idTransaksi;
     }
 
